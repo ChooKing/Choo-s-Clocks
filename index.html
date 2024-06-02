@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Choo King's Clocks</title>
+    <link rel="stylesheet" type="text/css" href="./src/style.css" />
+    <script type="module" src="/src/main.ts" defer></script>
+  </head>
+  <body>
+    <div id="app">
+        <div class="text-ring">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <path id="circle-defs" d="M5,50 a45,45 0 1,0 90,0 a45,45 0 1,0 -90,0"/>
+            </defs>
+
+            <text class="curved-text" transform="rotate(0,50,50)">
+              <textPath startOffset="50%" href="#circle-defs">Digital</textPath>
+            </text>
+            <text class="curved-text" transform="rotate(72,50,50)">
+              <textPath startOffset="50%" href="#circle-defs">Analog</textPath>
+            </text>
+            <text class="curved-text" transform="rotate(144,50,50)">
+              <textPath startOffset="50%" href="#circle-defs">Countdown</textPath>
+            </text>
+            <text class="curved-text" transform="rotate(216,50,50)">
+              <textPath startOffset="50%" href="#circle-defs">Stopwatch</textPath>
+            </text>
+            <text class="curved-text" transform="rotate(288,50,50)">
+              <textPath startOffset="50%" href="#circle-defs">Alarm</textPath>
+            </text>
+          </svg>
+        </div>
+        <div class="clock-container">
+
+        </div>
+    </div>
+
+  </body>
+</html>
