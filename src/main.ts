@@ -1,4 +1,4 @@
-import {clockNameType, clockSettings, clockNames} from "./global.tsx";
+import {clockNameType, clockSettings, clockNames} from "./global.ts";
 function renderClock(name: clockNameType){
     const clockContainer = document.querySelector('.clock-container') as HTMLDivElement;
     clockContainer.innerText = name;
