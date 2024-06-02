@@ -22,7 +22,7 @@ setInterval(()=>{
     const now = new Date();
     clockSettings.time = (now.getHours()*3600 + now.getMinutes()* 60 + now.getSeconds()) * 1000 + now.getMilliseconds();
     if(clockSettings.currentClock==="digital"){
-        updateTime(sec2Time(clockSettings.time/1000),document.querySelector(".led-time") as HTMLDivElement);
+        updateTime(sec2Time(Math.round(clockSettings.time/1000)),document.querySelector(".led-time") as HTMLDivElement);
     }
 }, 115);
 setCurrentClock("digital");
