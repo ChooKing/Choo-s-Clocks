@@ -1,0 +1,7 @@
+.digital-clock{
+    --led-color: rgb(6, 136, 228);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}

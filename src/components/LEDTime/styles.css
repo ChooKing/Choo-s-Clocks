@@ -1,0 +1,20 @@
+.led-time{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+.colon{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 15%;
+    aspect-ratio: 10;
+}
+.colon::before, .colon::after{
+    content: "";
+    background-color: var(--led-color);
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+}
