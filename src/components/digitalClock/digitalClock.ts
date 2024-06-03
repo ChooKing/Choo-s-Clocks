@@ -1,6 +1,6 @@
 import {renderTime, updateTime} from "../LEDTime/LEDTime.ts";
 import {Clock} from "../../Clock.ts";
-import {timeObj} from "../../global.ts";
+import {clockSettings, timeObj} from "../../global.ts";
 
 export class DigitalClock extends Clock{
     constructor(parent: HTMLDivElement) {
@@ -15,5 +15,17 @@ export class DigitalClock extends Clock{
 
     update(time: timeObj, target: HTMLDivElement): void {
         updateTime(time, target.querySelector(".led-time") as HTMLDivElement);
+    }
+    show(){
+        super.show();
+        this.element.classList.add("flex");
+        clockSettings.formattedTimeSignal.subscribe(this.name, (time)=>{
+            this.update(time, clockSettings.clockContainer);
+        })
+    }
+    hide(){
+        super.hide();
+        this.element.classList.remove("flex");
+        clockSettings.formattedTimeSignal.unsubscribe(this.name);
     }
 }

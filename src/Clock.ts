@@ -11,7 +11,8 @@ export abstract class Clock {
         this.parent = parent;
     }
     abstract render(target: HTMLDivElement):void;
-    abstract update(time: timeObj, target: HTMLDivElement):void;
+    abstract update(time: timeObj|Date, target: HTMLDivElement):void;
+
     hide(){
         this.element.classList.add("fading");
         setTimeout(()=>{

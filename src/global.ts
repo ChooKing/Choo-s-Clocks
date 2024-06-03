@@ -1,6 +1,7 @@
 import {DigitalClock} from "./components/digitalClock/digitalClock.ts";
 import {Clock} from "./Clock.ts";
 import {AnalogClock} from "./components/analogClock/analogClock.ts";
+import {SignalProvider} from "./SignalProvider.ts";
 
 export const clockNames = ["digital", "analog","countdown", "stopwatch", "alarm"] as const;
 export type clockNameType = typeof clockNames[number];
@@ -15,7 +16,9 @@ export const clockSettings = {
     currentClock: clocks.digital,
     hr24: false,
     time: Date.now(),
-    clockContainer: clockContainer
+    clockContainer: clockContainer,
+    formattedTimeSignal: new SignalProvider<timeObj>(),
+    rawTimeSignal: new SignalProvider<Date>()
 }
 export type timeObj={
     hours: string;

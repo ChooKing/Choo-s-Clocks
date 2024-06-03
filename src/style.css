@@ -6,7 +6,9 @@
   padding: 0;
   box-sizing: border-box;
 }
-
+.flex{
+  display: flex;
+}
 #app{
   width: 100vmin;
   height: 100vmin;
@@ -15,7 +17,7 @@
   margin: auto;
 }
 .clock-container{
-  padding: 4%;
+
 }
 .clock-container, .text-ring{
   display: grid;
