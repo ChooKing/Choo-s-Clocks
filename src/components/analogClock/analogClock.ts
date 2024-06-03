@@ -1,5 +1,5 @@
 import {Clock} from "../../Clock.ts";
-import {clockSettings, timeObj} from "../../global.ts";
+import {clockSettings} from "../../global.ts";
 function hourAngle(timeData: Date){
     return (timeData.getHours() * 30) + (timeData.getMinutes() * 0.5);
 }
@@ -15,22 +15,22 @@ const numerals = {
     roman: ["XII","I","II","III","IV","V","VI","VII","VIII","IX","X","XI"]
 }
 export class AnalogClock extends Clock{
-    hourRef: HTMLDivElement;
-    minuteRef: HTMLDivElement;
-    secondRef: HTMLDivElement;
+    hourRef?: HTMLDivElement;
+    minuteRef?: HTMLDivElement;
+    secondRef?: HTMLDivElement;
     constructor(parent: HTMLDivElement) {
         super("analog", parent);
         this.render(parent);
     }
-    update(time: Date, target: HTMLDivElement) {
-        this.hourRef.style.setProperty("--hour-angle", hourAngle(time) + "deg");
-        this.minuteRef.style.setProperty("--minute-angle", minuteAngle(time) + "deg");
-        this.secondRef.style.setProperty("--second-angle", secondsAngle(time) + "deg");
+    update(time: Date) {
+        this.hourRef!.style.setProperty("--hour-angle", hourAngle(time) + "deg");
+        this.minuteRef!.style.setProperty("--minute-angle", minuteAngle(time) + "deg");
+        this.secondRef!.style.setProperty("--second-angle", secondsAngle(time) + "deg");
     }
     show() {
         super.show();
         clockSettings.rawTimeSignal.subscribe(this.name, (time)=>{
-            this.update(time, this.parent);
+            this.update(time);
         });
     }
     hide() {
