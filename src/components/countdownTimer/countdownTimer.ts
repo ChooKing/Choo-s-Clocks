@@ -1,18 +1,27 @@
 import {Clock} from "../../Clock.ts";
-import {timeObj} from "../../global.ts";
-import {renderTime} from "../LEDTime/LEDTime.ts";
+import {clockSettings, timeObj} from "../../global.ts";
+import {renderTime, updateTime} from "../LEDTime/LEDTime.ts";
+import {sec2Time} from "../../util.ts";
 const buttonStates = {
     set:[false, true, false,false,false],
     stop: [true, false, false,false,false],
     run:[false, false, true,false, true],
     pause:[false, false, false,true,true]
 }
-type timerStates = keyof typeof buttonStates;
+type timerStates = keyof typeof buttonStates | "start";
 export class CountdownTimer extends Clock{
-
+    duration: number;
+    elapsed: number;
+    lastUpdate: number;
+    timerState: timerStates;
     constructor(parent: HTMLDivElement) {
         super("countdown", parent);
         this.render(parent);
+        this.duration = 0;
+        this.elapsed = 0;
+        this.lastUpdate = 0;
+        this.timerState = "stop";
+        this.setState("stop");
     }
 
     render(target: HTMLDivElement): void {
@@ -58,13 +67,13 @@ export class CountdownTimer extends Clock{
         const setButton = document.createElement("button");
         setButton.textContent = "set";
         setButton.addEventListener("click",()=>{
-            this.setState("set");
+            this.setDuration(65);
         });
         buttons.appendChild(setButton);
         const startButton = document.createElement("button");
         startButton.textContent = "start";
         startButton.addEventListener("click",()=>{
-            this.setState("run");
+            this.setState("start");
         });
         buttons.appendChild(startButton);
         const pauseButton = document.createElement("button");
@@ -92,14 +101,44 @@ export class CountdownTimer extends Clock{
         target.appendChild(this.element);
     }
     setState(state: timerStates){
+        if(state === "start"){
+            clockSettings.rawTimeSignal.subscribe(this.name,(time)=>{
+                this.update(time);
+            });
+            state = "run";
+            this.elapsed = 0;
+        }
+        else if(state === "stop"){
+            clockSettings.rawTimeSignal.unsubscribe(this.name);
+        }
         const buttons = this.element.querySelectorAll("button") as NodeListOf<HTMLButtonElement>;
         const buttonState = buttonStates[state];
         buttons.forEach((button, index) => {
             if(!buttonState[index]) button.classList.add("hidden");
             else button.classList.remove("hidden");
         });
+        this.timerState = state;
     }
-    update(time: timeObj | Date, target?: HTMLDivElement): void {
+    setDuration(num: number){
+        this.duration = num * 1000;
+        this.setState("set");
+        const time = sec2Time(num);
+        updateTime(time, this.element.querySelector(".led-time") as HTMLDivElement);
+    }
+
+    update(time: number): void {
+        if(this.lastUpdate === 0) this.lastUpdate = time;
+        if(this.timerState === "run"){
+            this.elapsed += time - this.lastUpdate;
+            const timeRemaining = this.duration - this.elapsed;
+            const remainingObj = sec2Time(Math.round(timeRemaining / 1000));
+            updateTime(remainingObj, this.element.querySelector(".led-time") as HTMLDivElement);
+            if(this.elapsed >= this.duration){
+                this.setState("stop");
+                console.log("finished");
+            }
+        }
+        this.lastUpdate = time;
     }
 
 }

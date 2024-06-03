@@ -13,14 +13,14 @@ export class DigitalClock extends Clock{
         target.appendChild(this.element);
     }
 
-    update(time: timeObj, target: HTMLDivElement): void {
-        updateTime(time, target.querySelector(".led-time") as HTMLDivElement);
+    update(time: timeObj): void {
+        updateTime(time, this.element.querySelector(".led-time") as HTMLDivElement);
     }
     show(){
         super.show();
         this.element.classList.add("flex");
         clockSettings.formattedTimeSignal.subscribe(this.name, (time)=>{
-            this.update(time, clockSettings.clockContainer);
+            this.update(time);
         })
     }
     hide(){
