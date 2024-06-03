@@ -1,12 +1,14 @@
 import {DigitalClock} from "./components/digitalClock/digitalClock.ts";
 import {Clock} from "./Clock.ts";
+import {AnalogClock} from "./components/analogClock/analogClock.ts";
 
 export const clockNames = ["digital", "analog","countdown", "stopwatch", "alarm"] as const;
 export type clockNameType = typeof clockNames[number];
 export type clocksType = {[key: string]: Clock};
 const clockContainer = document.querySelector('.clock-container') as HTMLDivElement;
 export const clocks:clocksType = {
-    digital: new DigitalClock(clockContainer)
+    digital: new DigitalClock(clockContainer),
+    analog: new AnalogClock(clockContainer)
 }
 
 export const clockSettings = {

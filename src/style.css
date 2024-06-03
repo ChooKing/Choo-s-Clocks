@@ -99,9 +99,14 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+
+}
+.clock-container > div{
   transition: opacity 1s;
 }
 .fading{
   opacity: 0;
-
+}
+.hidden{
+  display: none;
 }

@@ -17,9 +17,3 @@ export class DigitalClock extends Clock{
         updateTime(time, target.querySelector(".led-time") as HTMLDivElement);
     }
 }
-export function renderDigitalClock(target: HTMLDivElement) {
-    const container = document.createElement("div");
-    container.classList.add("digital-clock");
-    renderTime({hours: "01", minutes:"23", seconds:"45"}, container);
-    target.appendChild(container);
-}

@@ -4,7 +4,13 @@ import {sec2Time} from "./util.ts";
 export function setCurrentClock(name: clockNameType){
     const textRing = document.querySelector(".text-ring") as HTMLDivElement;
     textRing.style.setProperty("--rotation", String(clockNames.findIndex(item=>item === name) * (-360 / clockNames.length) + 90)+"deg");
+    clockSettings.currentClock.hide();
     clockSettings.currentClock = clocks[name];
+    console.log(clocks[name]);
+    setTimeout(()=>{
+        console.log("test")
+        clocks[name].show();
+    },750);
 }
 
 setInterval(()=>{
