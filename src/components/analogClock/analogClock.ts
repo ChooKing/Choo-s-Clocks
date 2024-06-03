@@ -29,7 +29,7 @@ export class AnalogClock extends Clock{
     }
     show() {
         super.show();
-        clockSettings.rawTimeSignal.subscribe(this.name, (time)=>{
+        clockSettings.dateTimeSignal.subscribe(this.name, (time)=>{
             this.update(time);
         });
     }
