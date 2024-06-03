@@ -1,6 +1,5 @@
 import {renderPair} from "./DigitPair/digitPair.ts";
-import {clockSettings, timeObj} from "../../global.ts";
-import {sec2Time} from "../../util.ts";
+import {timeObj} from "../../global.ts";
 import {setDigit} from "./LEDDigit/LEDDigit.ts";
 function renderColon(container:HTMLDivElement){
     const colon = document.createElement("div");

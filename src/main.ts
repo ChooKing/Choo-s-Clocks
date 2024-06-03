@@ -17,10 +17,11 @@ export function setCurrentClock(name: clockNameType){
 setInterval(()=>{
     const now = new Date();
     const rawTime = (now.getHours()*3600 + now.getMinutes()* 60 + now.getSeconds()) * 1000 + now.getMilliseconds();
-    clockSettings.rawTimeSignal.notify(now);
+    clockSettings.rawTimeSignal.notify(rawTime);
+    clockSettings.dateTimeSignal.notify(now);
     clockSettings.formattedTimeSignal.notify(sec2Time(Math.round(rawTime/1000)));
 }, 115);
-setCurrentClock("analog");
+setCurrentClock("countdown");
 
 const textRing = document.querySelector(".text-ring") as HTMLDivElement;
 textRing.addEventListener("click", (e)=>{
