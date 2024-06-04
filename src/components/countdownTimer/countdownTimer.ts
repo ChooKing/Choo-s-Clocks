@@ -9,7 +9,7 @@ const buttonStates = {
     run:[false, false, true,false, true],
     pause:[false, false, false,true,true]
 }
-type timerStates = keyof typeof buttonStates | "start";
+type timerStates = keyof typeof buttonStates | "start" | "resume";
 export class CountdownTimer extends Clock{
     duration: number;
     elapsed: number;
@@ -86,7 +86,7 @@ export class CountdownTimer extends Clock{
         const resumeButton = document.createElement("button");
         resumeButton.textContent = "resume";
         resumeButton.addEventListener("click",()=>{
-           this.setState("run");
+           this.setState("resume");
         });
         buttons.appendChild(resumeButton);
         this.element.appendChild(buttons);
@@ -109,8 +109,19 @@ export class CountdownTimer extends Clock{
             state = "run";
             this.elapsed = 0;
         }
+        else if(state === "pause"){
+            clockSettings.rawTimeSignal.unsubscribe(this.name);
+        }
         else if(state === "stop"){
             clockSettings.rawTimeSignal.unsubscribe(this.name);
+            this.setDuration(0);
+        }
+        else if(state === "resume"){
+            console.log("resume")
+            clockSettings.rawTimeSignal.subscribe(this.name,(time)=>{
+                this.update(time);
+            });
+            state = "run";
         }
         const buttons = this.element.querySelectorAll("button") as NodeListOf<HTMLButtonElement>;
         const buttonState = buttonStates[state];
@@ -128,7 +139,7 @@ export class CountdownTimer extends Clock{
     }
 
     update(time: number): void {
-        if(this.lastUpdate === 0) this.lastUpdate = time;
+        if(time - this.lastUpdate > 1000) this.lastUpdate = time;
         if(this.timerState === "run"){
             this.elapsed += time - this.lastUpdate;
             const timeRemaining = this.duration - this.elapsed;
