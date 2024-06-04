@@ -1,5 +1,6 @@
+import "./styles.css";
 import {Clock} from "../../Clock.ts";
-import {clockSettings, timeObj} from "../../global.ts";
+import {clockSettings} from "../../global.ts";
 import {renderTime, updateTime} from "../LEDTime/LEDTime.ts";
 import {sec2Time} from "../../util.ts";
 const buttonStates = {

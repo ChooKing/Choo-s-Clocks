@@ -1,3 +1,4 @@
+import "./styles.css";
 import {renderTime, updateTime} from "../LEDTime/LEDTime.ts";
 import {Clock} from "../../Clock.ts";
 import {clockSettings, timeObj} from "../../global.ts";

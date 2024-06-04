@@ -1,3 +1,4 @@
+import "./styles.css";
 const segments = [
     [true, true, true,true, true, true, false],
     [false, true, true,false, false, false, false],

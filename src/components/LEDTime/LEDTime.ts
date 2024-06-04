@@ -1,3 +1,4 @@
+import "./styles.css";
 import {renderPair} from "./DigitPair/digitPair.ts";
 import {timeObj} from "../../global.ts";
 import {setDigit} from "./LEDDigit/LEDDigit.ts";

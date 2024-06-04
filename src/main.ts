@@ -1,3 +1,4 @@
+import "./style.css";
 import {clockNameType, clockSettings, clockNames, clocks} from "./global.ts";
 import {sec2Time} from "./util.ts";
 

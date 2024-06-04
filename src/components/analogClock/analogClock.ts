@@ -1,3 +1,4 @@
+import "./styles.css";
 import {Clock} from "../../Clock.ts";
 import {clockSettings} from "../../global.ts";
 function hourAngle(timeData: Date){
