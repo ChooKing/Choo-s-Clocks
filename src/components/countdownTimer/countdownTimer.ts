@@ -117,7 +117,6 @@ export class CountdownTimer extends Clock{
             this.setDuration(0);
         }
         else if(state === "resume"){
-            console.log("resume")
             clockSettings.rawTimeSignal.subscribe(this.name,(time)=>{
                 this.update(time);
             });
@@ -136,6 +135,7 @@ export class CountdownTimer extends Clock{
         this.setState("set");
         const time = sec2Time(num);
         updateTime(time, this.element.querySelector(".led-time") as HTMLDivElement);
+        this.element.style.setProperty("--percent-remaining", "100%");
     }
 
     update(time: number): void {
@@ -143,6 +143,8 @@ export class CountdownTimer extends Clock{
         if(this.timerState === "run"){
             this.elapsed += time - this.lastUpdate;
             const timeRemaining = this.duration - this.elapsed;
+            const percentRemaining = (timeRemaining / this.duration) * 100;
+            this.element.style.setProperty("--percent-remaining", percentRemaining+"%");
             const remainingObj = sec2Time(Math.round(timeRemaining / 1000));
             updateTime(remainingObj, this.element.querySelector(".led-time") as HTMLDivElement);
             if(this.elapsed >= this.duration){
