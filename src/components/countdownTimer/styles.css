@@ -1,5 +1,5 @@
 .countdown-clock{
-    --percent-remaining: 100%;
+    --percent-remaining: 0%;
     width: 88%;
     height: 88%;
     align-items: center;

@@ -49,6 +49,7 @@ export class CountdownTimer extends Clock{
         glassLower.appendChild(landedViewport);
         const sandFalling = document.createElement("div");
         sandFalling.classList.add("sand-falling");
+        sandFalling.classList.add("hidden");
         glassLower.appendChild(sandFalling);
         hourglass.appendChild(glassLower);
         const capBottom = document.createElement("div");
@@ -115,12 +116,20 @@ export class CountdownTimer extends Clock{
         else if(state === "stop"){
             clockSettings.rawTimeSignal.unsubscribe(this.name);
             this.setDuration(0);
+            this.element.style.setProperty("--percent-remaining", "0%");
         }
         else if(state === "resume"){
             clockSettings.rawTimeSignal.subscribe(this.name,(time)=>{
                 this.update(time);
             });
             state = "run";
+        }
+        const sandFalling = this.element.querySelector(".sand-falling") as HTMLDivElement;
+        if(state === "run"){
+            sandFalling.classList.remove("hidden");
+        }
+        else{
+            sandFalling.classList.add("hidden");
         }
         const buttons = this.element.querySelectorAll("button") as NodeListOf<HTMLButtonElement>;
         const buttonState = buttonStates[state];
@@ -135,7 +144,7 @@ export class CountdownTimer extends Clock{
         this.setState("set");
         const time = sec2Time(num);
         updateTime(time, this.element.querySelector(".led-time") as HTMLDivElement);
-        this.element.style.setProperty("--percent-remaining", "100%");
+        if(num !== 0) this.element.style.setProperty("--percent-remaining", "100%");
     }
 
     update(time: number): void {
