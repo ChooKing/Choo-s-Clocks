@@ -107,6 +107,7 @@ export class CountdownTimer extends Clock<number>{
     }
     setState(state: timerStates){
         if(state === "start"){
+            this.lastUpdate = this.timeSource.value ?? Date.now();
             this.timeSource.subscribe(this.name,(time)=>{
                 this.update(time);
             });
@@ -122,6 +123,7 @@ export class CountdownTimer extends Clock<number>{
             this.element.style.setProperty("--percent-remaining", "0%");
         }
         else if(state === "resume"){
+            this.lastUpdate = this.timeSource.value ?? Date.now();
             this.timeSource.subscribe(this.name,(time)=>{
                 this.update(time);
             });
@@ -151,7 +153,6 @@ export class CountdownTimer extends Clock<number>{
     }
 
     update(time: number): void {
-        if(time - this.lastUpdate > 1000) this.lastUpdate = time;
         if(this.timerState === "run"){
             this.elapsed += time - this.lastUpdate;
             const timeRemaining = this.duration - this.elapsed;
