@@ -7,14 +7,14 @@
     justify-items: center;
     gap: 2vmin;
 }
-.time-container{
+.stopwatch-clock .time-container{
     grid-area: 2/1/3/2;
     width: 100%;
     display: flex;
     gap: 1vmin;
     align-items: flex-end;
 }
-.time-container .led-time{
+.stopwatch-clock .time-container .led-time{
     flex: 1;
 }
 .centiseconds{
