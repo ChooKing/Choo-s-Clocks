@@ -10,5 +10,6 @@ export abstract class Clock<T> extends Component<T>{
         super(parent);
         this.name = name;
         this.timeSource = timeSource;
+        this.element.classList.add("hidden");
     }
 }
