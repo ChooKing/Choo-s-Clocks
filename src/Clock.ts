@@ -1,26 +1,14 @@
-import {timeObj} from "./global.ts";
+import {Component} from "./components/Component.ts";
+import {SignalProvider} from "./SignalProvider.ts";
 
-export abstract class Clock {
+
+export abstract class Clock<T> extends Component<T>{
     name: string;
-    element: HTMLDivElement;
-    parent: HTMLDivElement;
-    constructor(name: string, parent: HTMLDivElement) {
-        this.name = name;
-        this.element = document.createElement("div");
-        this.element.classList.add("hidden");
-        this.parent = parent;
-    }
-    abstract render(target: HTMLDivElement):void;
-    abstract update(time: timeObj|Date|number):void;
+    timeSource: SignalProvider<T>;
 
-    hide(){
-        this.element.classList.add("fading");
-        setTimeout(()=>{
-            this.element.classList.add("hidden");
-        }, 500);
-    }
-    show(){
-        this.element.classList.remove("hidden");
-        this.element.classList.remove("fading");
+    protected constructor(name: string, parent: HTMLDivElement, timeSource: SignalProvider<T>) {
+        super(parent);
+        this.name = name;
+        this.timeSource = timeSource;
     }
 }

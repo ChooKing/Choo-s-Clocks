@@ -1,12 +1,12 @@
 import "./styles.css";
 import {renderTime, updateTime} from "../LEDTime/LEDTime.ts";
 import {Clock} from "../../Clock.ts";
-import {clockSettings} from "../../global.ts";
 import {timeObj} from "../../util.ts";
+import {SignalProvider} from "../../SignalProvider.ts";
 
-export class DigitalClock extends Clock{
-    constructor(parent: HTMLDivElement) {
-        super("digital", parent);
+export class DigitalClock extends Clock<timeObj>{
+    constructor(parent: HTMLDivElement, timeSource: SignalProvider<timeObj>) {
+        super("digital", parent, timeSource);
         this.render(parent);
     }
     render(target: HTMLDivElement) {
@@ -21,13 +21,13 @@ export class DigitalClock extends Clock{
     show(){
         super.show();
         this.element.classList.add("flex");
-        clockSettings.formattedTimeSignal.subscribe(this.name, (time)=>{
+        this.timeSource.subscribe(this.name, (time)=>{
             this.update(time);
         })
     }
     hide(){
         super.hide();
         this.element.classList.remove("flex");
-        clockSettings.formattedTimeSignal.unsubscribe(this.name);
+        this.timeSource.unsubscribe(this.name);
     }
 }

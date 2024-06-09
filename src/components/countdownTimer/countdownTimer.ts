@@ -1,8 +1,8 @@
 import "./styles.css";
 import {Clock} from "../../Clock.ts";
-import {clockSettings} from "../../global.ts";
 import {renderTime, updateTime} from "../LEDTime/LEDTime.ts";
 import {sec2Time} from "../../util.ts";
+import {SignalProvider} from "../../SignalProvider.ts";
 const buttonStates = {
     set:[false, true, false,false,false],
     stop: [true, false, false,false,false],
@@ -10,13 +10,13 @@ const buttonStates = {
     pause:[false, false, false,true,true]
 }
 type timerStates = keyof typeof buttonStates | "start" | "resume";
-export class CountdownTimer extends Clock{
+export class CountdownTimer extends Clock<number>{
     duration: number;
     elapsed: number;
     lastUpdate: number;
     timerState: timerStates;
-    constructor(parent: HTMLDivElement) {
-        super("countdown", parent);
+    constructor(parent: HTMLDivElement, timeSource: SignalProvider<number>) {
+        super("countdown", parent, timeSource);
         this.render(parent);
         this.duration = 0;
         this.elapsed = 0;
@@ -107,22 +107,22 @@ export class CountdownTimer extends Clock{
     }
     setState(state: timerStates){
         if(state === "start"){
-            clockSettings.rawTimeSignal.subscribe(this.name,(time)=>{
+            this.timeSource.subscribe(this.name,(time)=>{
                 this.update(time);
             });
             state = "run";
             this.elapsed = 0;
         }
         else if(state === "pause"){
-            clockSettings.rawTimeSignal.unsubscribe(this.name);
+            this.timeSource.unsubscribe(this.name);
         }
         else if(state === "stop"){
-            clockSettings.rawTimeSignal.unsubscribe(this.name);
+            this.timeSource.unsubscribe(this.name);
             this.setDuration(0);
             this.element.style.setProperty("--percent-remaining", "0%");
         }
         else if(state === "resume"){
-            clockSettings.rawTimeSignal.subscribe(this.name,(time)=>{
+            this.timeSource.subscribe(this.name,(time)=>{
                 this.update(time);
             });
             state = "run";

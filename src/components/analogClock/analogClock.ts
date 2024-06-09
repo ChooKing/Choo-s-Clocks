@@ -1,6 +1,6 @@
 import "./styles.css";
 import {Clock} from "../../Clock.ts";
-import {clockSettings} from "../../global.ts";
+import {SignalProvider} from "../../SignalProvider.ts";
 function hourAngle(timeData: Date){
     return (timeData.getHours() * 30) + (timeData.getMinutes() * 0.5);
 }
@@ -15,12 +15,12 @@ const numerals = {
     arabic: ["12","1","2","3","4","5","6","7","8","9","10","11"],
     roman: ["XII","I","II","III","IV","V","VI","VII","VIII","IX","X","XI"]
 }
-export class AnalogClock extends Clock{
+export class AnalogClock extends Clock<Date>{
     hourRef?: HTMLDivElement;
     minuteRef?: HTMLDivElement;
     secondRef?: HTMLDivElement;
-    constructor(parent: HTMLDivElement) {
-        super("analog", parent);
+    constructor(parent: HTMLDivElement, timeSource: SignalProvider<Date>) {
+        super("analog", parent, timeSource);
         this.render(parent);
     }
     update(time: Date) {
@@ -30,7 +30,7 @@ export class AnalogClock extends Clock{
     }
     show() {
         super.show();
-        clockSettings.dateTimeSignal.subscribe(this.name, (time)=>{
+        this.timeSource.subscribe(this.name, (time)=>{
             this.update(time);
         });
     }
