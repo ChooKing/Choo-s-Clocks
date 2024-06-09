@@ -1,7 +1,8 @@
 import "./styles.css";
 import {renderTime, updateTime} from "../LEDTime/LEDTime.ts";
 import {Clock} from "../../Clock.ts";
-import {clockSettings, timeObj} from "../../global.ts";
+import {clockSettings} from "../../global.ts";
+import {timeObj} from "../../util.ts";
 
 export class DigitalClock extends Clock{
     constructor(parent: HTMLDivElement) {
@@ -10,7 +11,7 @@ export class DigitalClock extends Clock{
     }
     render(target: HTMLDivElement) {
         this.element.classList.add("digital-clock");
-        renderTime({hours: "00", minutes:"00", seconds:"00"}, this.element);
+        renderTime({hours: ["0","0"], minutes:["0","0"], seconds:["0","0"]}, this.element);
         target.appendChild(this.element);
     }
 

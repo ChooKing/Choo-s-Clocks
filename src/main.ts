@@ -23,7 +23,7 @@ setInterval(()=>{
     clockSettings.dateTimeSignal.notify(now);
     clockSettings.formattedTimeSignal.notify(sec2Time(Math.round(rawTime/1000)));
 }, 115);
-setCurrentClock("countdown");
+setCurrentClock("digital");
 
 const textRing = document.querySelector(".text-ring") as HTMLDivElement;
 textRing.addEventListener("click", (e)=>{

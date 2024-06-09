@@ -60,7 +60,10 @@ export class CountdownTimer extends Clock{
 
         const controls = document.createElement("div");
         controls.classList.add("controls");
-        renderTime({hours:"00",minutes:"00",seconds:"00"}, controls);
+        const digitalDisplay = document.createElement("div");
+        digitalDisplay.classList.add("digital-display");
+        controls.appendChild(digitalDisplay);
+        renderTime({hours: ["0","0"], minutes:["0","0"], seconds:["0","0"]}, digitalDisplay);
 
 
         //BUTTONS
