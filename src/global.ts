@@ -4,6 +4,7 @@ import {SignalProvider} from "./SignalProvider.ts";
 import {CountdownTimer} from "./components/countdownTimer/countdownTimer.ts";
 import {timeObj} from "./util.ts";
 import {StopwatchClock} from "./components/stopwatch/stopwatchClock.ts";
+import {AlarmClock} from "./components/alarm/alarmClock.ts";
 
 export const clockNames = ["digital", "analog","countdown", "stopwatch", "alarm"] as const;
 //export type clockNameType = typeof clockNames[number];
@@ -20,7 +21,8 @@ export const clocks = {
     digital: new DigitalClock(clockContainer, signals.formattedTimeSignal),
     analog: new AnalogClock(clockContainer, signals.dateTimeSignal),
     countdown: new CountdownTimer(clockContainer, signals.rawTimeSignal),
-    stopwatch: new StopwatchClock(clockContainer, signals.rawTimeSignal)
+    stopwatch: new StopwatchClock(clockContainer, signals.rawTimeSignal),
+    alarm: new AlarmClock(clockContainer, signals.formattedTimeSignal)
 }
 export type clockNameType = keyof typeof clocks;
 export const clockSettings = {
