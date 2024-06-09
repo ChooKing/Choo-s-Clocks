@@ -10,6 +10,9 @@ export class StopwatchClock extends Clock<number>{
     lastUpdate = 0;
     isRunning = false;
     centisecondContainer?: HTMLDivElement;
+    startButton?: HTMLButtonElement;
+    stopButton?: HTMLButtonElement;
+    clearButton?: HTMLButtonElement;
     constructor(parent: HTMLDivElement, timeSource: SignalProvider<number>) {
         super("stopwatch",parent, timeSource);
         this.timeSource = timeSource;
@@ -31,10 +34,24 @@ export class StopwatchClock extends Clock<number>{
 
         const controls = document.createElement("div");
         controls.classList.add("controls");
-        const startButton = document.createElement("button");
-        startButton.innerText = "start";
-        controls.appendChild(startButton);
-        startButton.addEventListener("click", ()=>{this.start()});
+        this.startButton = document.createElement("button");
+        this.startButton.innerText = "start";
+        controls.appendChild(this.startButton);
+        this.startButton.addEventListener("click", ()=>{this.start()});
+
+
+        this.stopButton = document.createElement("button");
+        this.stopButton.innerText = "stop";
+        controls.appendChild(this.stopButton);
+        this.stopButton.addEventListener("click", ()=>{this.stop()});
+        this.stopButton.classList.add("hidden");
+
+
+        this.clearButton = document.createElement("button");
+        this.clearButton.innerText = "clear";
+        controls.appendChild(this.clearButton);
+        this.clearButton.addEventListener("click", ()=>{this.clear()});
+        this.clearButton.classList.add("hidden");
 
         this.element.appendChild(controls);
 
@@ -45,19 +62,39 @@ export class StopwatchClock extends Clock<number>{
         this.lastUpdate = this.timeSource.value!;
         this.timeSource.subscribe("stopwatch", (time)=>{
             this.update(time);
-        })
+        });
+        this.startButton?.classList.add("hidden");
+        this.startButton!.innerText = "resume";
+        this.stopButton?.classList.remove("hidden");
+        this.clearButton?.classList.add("hidden");
+    }
+    stop(){
+        this.isRunning = false;
+        this.timeSource.unsubscribe("stopwatch");
+        this.update(this.timeSource.value!);// Enhance accuracy over 151ms polling
+        this.startButton?.classList.remove("hidden");
+        this.stopButton?.classList.add("hidden");
+        this.clearButton?.classList.remove("hidden");
+    }
+    clear(){
+        this.lastUpdate = this.timeSource.value!;
+        this.elapsed = 0;
+        this.update(this.lastUpdate);
+        this.startButton?.classList.remove("hidden");
+        this.startButton!.innerText ="start";
+        this.stopButton?.classList.add("hidden");
+        this.clearButton?.classList.add("hidden");
+
     }
     update(time: number): void {
-        if(this.isRunning){
-            this.elapsed += (time - this.lastUpdate);
-            const timeStrings = sec2Time(Math.round(this.elapsed /1000));
-            updateTime(timeStrings, this.element.querySelector(".led-time") as HTMLDivElement);
-            const centisecondStr = String((this.elapsed % 1000) / 10).padStart(2,"0");
-            const centisecondDigits = this.centisecondContainer?.querySelectorAll(".digit");
-            setDigit(centisecondStr[0] as DigitType, centisecondDigits![0] as HTMLDivElement);
-            setDigit(centisecondStr[1] as DigitType, centisecondDigits![1] as HTMLDivElement);
-            this.lastUpdate = time;
-        }
+        this.elapsed += (time - this.lastUpdate);
+        const timeStrings = sec2Time(Math.round(this.elapsed /1000));
+        updateTime(timeStrings, this.element.querySelector(".led-time") as HTMLDivElement);
+        const centisecondStr = String((this.elapsed % 1000) / 10).padStart(2,"0");
+        const centisecondDigits = this.centisecondContainer?.querySelectorAll(".digit");
+        setDigit(centisecondStr[0] as DigitType, centisecondDigits![0] as HTMLDivElement);
+        setDigit(centisecondStr[1] as DigitType, centisecondDigits![1] as HTMLDivElement);
+        this.lastUpdate = time;
     }
     show() {
         super.show();

@@ -23,7 +23,7 @@ setInterval(()=>{
     signals.dateTimeSignal.notify(now);
     signals.formattedTimeSignal.notify(sec2Time(Math.round(rawTime/1000)));
 }, 115);
-setCurrentClock("digital");
+setCurrentClock("stopwatch");
 
 const textRing = document.querySelector(".text-ring") as HTMLDivElement;
 textRing.addEventListener("click", (e)=>{

@@ -24,8 +24,10 @@
 }
 .stopwatch-clock .controls{
     grid-area: 3/1/4/2;
+    align-self: start;
     display: flex;
     justify-items: center;
+    gap: 1vmin;
 }
 .stopwatch-clock .controls button{
     font-size: 3vmin;
