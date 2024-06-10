@@ -3,6 +3,7 @@ import {Clock} from "../../Clock.ts";
 import {timeObj} from "../../util.ts";
 import {SignalProvider} from "../../SignalProvider.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
+import {blankTime} from "../../global.ts";
 
 export class AlarmClock extends Clock<timeObj>{
     setButton? : HTMLButtonElement;
@@ -31,7 +32,7 @@ export class AlarmClock extends Clock<timeObj>{
         target.appendChild(this.element);
     }
     set(){
-
+        this.timeView?.update(blankTime);
     }
     show(){
         super.show();

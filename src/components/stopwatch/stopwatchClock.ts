@@ -4,6 +4,7 @@ import {SignalProvider} from "../../SignalProvider.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
 import {sec2Time} from "../../util.ts";
 import {DigitType, LEDDigit} from "../LEDTime/LEDDigit/LEDDigit.ts";
+import {nullTime} from "../../global.ts";
 
 export class StopwatchClock extends Clock<number>{
     elapsed = 0;
@@ -25,7 +26,7 @@ export class StopwatchClock extends Clock<number>{
         const timeContainer = document.createElement("div");
         timeContainer.classList.add("time-container");
         this.timeView = new LEDTime(timeContainer);
-        this.timeView.update({hours: ["0","0"], minutes:["0","0"], seconds:["0","0"]});
+        this.timeView.update(nullTime);
         this.timeView.show();
 
 
@@ -91,7 +92,7 @@ export class StopwatchClock extends Clock<number>{
     clear(){
         this.lastUpdate = this.timeSource.value!;
         this.elapsed = 0;
-        this.timeView!.update({hours: ["0","0"], minutes:["0","0"], seconds:["0","0"]});
+        this.timeView!.update(nullTime);
         this.centisecondView[0].update("0");
         this.centisecondView[1].update("0");
         this.startButton?.classList.remove("hidden");

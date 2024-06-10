@@ -7,9 +7,9 @@ import {StopwatchClock} from "./components/stopwatch/stopwatchClock.ts";
 import {AlarmClock} from "./components/alarm/alarmClock.ts";
 
 export const clockNames = ["digital", "analog","countdown", "stopwatch", "alarm"] as const;
-//export type clockNameType = typeof clockNames[number];
 export type timeSignalType = Date | timeObj | number;
-
+export const nullTime = {hours: ["0","0"], minutes:["0","0"], seconds:["0","0"]} as timeObj;
+export const blankTime = {hours: [" "," "], minutes:[" "," "], seconds:[" "," "]} as timeObj;
 const clockContainer = document.querySelector('.clock-container') as HTMLDivElement;
 export const signals = {
     formattedTimeSignal: new SignalProvider<timeObj>(),
@@ -29,3 +29,4 @@ export const clockSettings = {
     currentClock: null as clockNameType|null,
     hr24: false
 }
+
