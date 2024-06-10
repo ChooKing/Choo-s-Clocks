@@ -2,10 +2,11 @@ import "./styles.css";
 import {Clock} from "../../Clock.ts";
 import {timeObj} from "../../util.ts";
 import {SignalProvider} from "../../SignalProvider.ts";
-import {renderTime} from "../LEDTime/LEDTime.ts";
+import {LEDTime} from "../LEDTime/LEDTime.ts";
 
 export class AlarmClock extends Clock<timeObj>{
     setButton? : HTMLButtonElement;
+    timeView?: LEDTime;
     constructor(parent: HTMLDivElement, timeSource: SignalProvider<timeObj>) {
         super("alarm", parent, timeSource);
         this.render(parent);
@@ -14,7 +15,10 @@ export class AlarmClock extends Clock<timeObj>{
         this.element.classList.add("alarm-clock");
         const timeContainer = document.createElement("div");
         timeContainer.classList.add("time-container");
-        renderTime({hours: ["1","2"], minutes:["0","0"], seconds:["0","0"]}, timeContainer);
+        this.timeView = new LEDTime(timeContainer);
+        this.timeView.update({hours: ["1","2"], minutes:["0","0"], seconds:["0","0"]});
+        this.timeView.show();
+
         this.element.appendChild(timeContainer);
 
         const controls = document.createElement("div");

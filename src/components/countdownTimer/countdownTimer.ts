@@ -1,6 +1,6 @@
 import "./styles.css";
 import {Clock} from "../../Clock.ts";
-import {renderTime, updateTime} from "../LEDTime/LEDTime.ts";
+import {LEDTime} from "../LEDTime/LEDTime.ts";
 import {sec2Time} from "../../util.ts";
 import {SignalProvider} from "../../SignalProvider.ts";
 const buttonStates = {
@@ -15,6 +15,7 @@ export class CountdownTimer extends Clock<number>{
     elapsed: number;
     lastUpdate: number;
     timerState: timerStates;
+    timeView?: LEDTime;
     constructor(parent: HTMLDivElement, timeSource: SignalProvider<number>) {
         super("countdown", parent, timeSource);
         this.render(parent);
@@ -60,11 +61,9 @@ export class CountdownTimer extends Clock<number>{
 
         const controls = document.createElement("div");
         controls.classList.add("controls");
-        const digitalDisplay = document.createElement("div");
-        digitalDisplay.classList.add("digital-display");
-        controls.appendChild(digitalDisplay);
-        renderTime({hours: ["0","0"], minutes:["0","0"], seconds:["0","0"]}, digitalDisplay);
 
+        this.timeView = new LEDTime(controls);
+        this.timeView.show();
 
         //BUTTONS
         const buttons = document.createElement("div");
@@ -148,7 +147,8 @@ export class CountdownTimer extends Clock<number>{
         this.duration = num * 1000;
         this.setState("set");
         const time = sec2Time(num);
-        updateTime(time, this.element.querySelector(".led-time") as HTMLDivElement);
+        this.timeView?.update(time);
+        //updateTime(time, this.element.querySelector(".led-time") as HTMLDivElement);
         if(num !== 0) this.element.style.setProperty("--percent-remaining", "100%");
     }
 
@@ -159,7 +159,7 @@ export class CountdownTimer extends Clock<number>{
             const percentRemaining = (timeRemaining / this.duration) * 100;
             this.element.style.setProperty("--percent-remaining", percentRemaining+"%");
             const remainingObj = sec2Time(Math.round(timeRemaining / 1000));
-            updateTime(remainingObj, this.element.querySelector(".led-time") as HTMLDivElement);
+            this.timeView?.update(remainingObj);
             if(this.elapsed >= this.duration){
                 this.setState("stop");
                 console.log("finished");

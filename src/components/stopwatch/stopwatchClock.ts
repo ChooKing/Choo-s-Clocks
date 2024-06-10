@@ -1,15 +1,16 @@
 import "./styles.css";
 import {Clock} from "../../Clock.ts";
 import {SignalProvider} from "../../SignalProvider.ts";
-import {renderTime, updateTime} from "../LEDTime/LEDTime.ts";
+import {LEDTime} from "../LEDTime/LEDTime.ts";
 import {sec2Time} from "../../util.ts";
-import {DigitType, renderDigit, setDigit} from "../LEDTime/LEDDigit/LEDDigit.ts";
+import {DigitType, LEDDigit} from "../LEDTime/LEDDigit/LEDDigit.ts";
 
 export class StopwatchClock extends Clock<number>{
     elapsed = 0;
     lastUpdate = 0;
     isRunning = false;
-    centisecondContainer?: HTMLDivElement;
+    timeView?: LEDTime;
+    centisecondView: LEDDigit[] = [];
     startButton?: HTMLButtonElement;
     stopButton?: HTMLButtonElement;
     clearButton?: HTMLButtonElement;
@@ -23,12 +24,23 @@ export class StopwatchClock extends Clock<number>{
         this.element.classList.add("stopwatch-clock");
         const timeContainer = document.createElement("div");
         timeContainer.classList.add("time-container");
-        renderTime({hours: ["0","0"], minutes:["0","0"], seconds:["0","0"]}, timeContainer);
-        this.centisecondContainer = document.createElement("div");
-        this.centisecondContainer.classList.add("centiseconds");
-        renderDigit("0", this.centisecondContainer);
-        renderDigit("0", this.centisecondContainer);
-        timeContainer.appendChild(this.centisecondContainer);
+        this.timeView = new LEDTime(timeContainer);
+        this.timeView.update({hours: ["0","0"], minutes:["0","0"], seconds:["0","0"]});
+        this.timeView.show();
+
+
+
+
+        const centisecondContainer = document.createElement("div");
+        centisecondContainer.classList.add("centiseconds");
+        this.centisecondView.push(new LEDDigit(centisecondContainer));
+        this.centisecondView.push(new LEDDigit(centisecondContainer));
+        this.centisecondView[0].update("0");
+        this.centisecondView[0].show();
+        this.centisecondView[1].update("0");
+        this.centisecondView[1].show();
+
+        timeContainer.appendChild(centisecondContainer);
         this.element.appendChild(timeContainer);
 
 
@@ -79,7 +91,9 @@ export class StopwatchClock extends Clock<number>{
     clear(){
         this.lastUpdate = this.timeSource.value!;
         this.elapsed = 0;
-        this.update(this.lastUpdate);
+        this.timeView!.update({hours: ["0","0"], minutes:["0","0"], seconds:["0","0"]});
+        this.centisecondView[0].update("0");
+        this.centisecondView[1].update("0");
         this.startButton?.classList.remove("hidden");
         this.startButton!.innerText ="start";
         this.stopButton?.classList.add("hidden");
@@ -89,11 +103,12 @@ export class StopwatchClock extends Clock<number>{
     update(time: number): void {
         this.elapsed += (time - this.lastUpdate);
         const timeStrings = sec2Time(Math.round(this.elapsed /1000));
-        updateTime(timeStrings, this.element.querySelector(".led-time") as HTMLDivElement);
-        const centisecondStr = String((this.elapsed % 1000) / 10).padStart(2,"0");
-        const centisecondDigits = this.centisecondContainer?.querySelectorAll(".digit");
-        setDigit(centisecondStr[0] as DigitType, centisecondDigits![0] as HTMLDivElement);
-        setDigit(centisecondStr[1] as DigitType, centisecondDigits![1] as HTMLDivElement);
+        this.timeView?.update(timeStrings);
+
+        const centisecondStr = String(Math.round((this.elapsed % 1000) / 10)).padStart(2,"0");
+        this.centisecondView![0].update(centisecondStr[0] as DigitType);
+        this.centisecondView![1].update(centisecondStr[1] as DigitType);
+
         this.lastUpdate = time;
     }
     show() {

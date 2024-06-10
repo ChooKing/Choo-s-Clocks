@@ -1,6 +1,7 @@
 import "./styles.css";
+import {Component} from "../../Component.ts";
 
-const segments = {
+const segmentDefs = {
     " ": [false, false, false, false, false, false, false],
     "0": [true, true, true, true, true, true, false],
     "1": [false, true, true, false, false, false, false],
@@ -13,26 +14,33 @@ const segments = {
     "8": [true, true, true, true, true, true, true],
     "9": [true, true, true, true, false, true, true]
 };
-export type DigitType = keyof typeof segments;
+export type DigitType = keyof typeof segmentDefs;
 
-export function renderDigit(num: DigitType, target: HTMLElement) {
-    const container = document.createElement("div");
-    container.classList.add("digit");
-    segments[num].forEach((segment) => {
-        const led = document.createElement("div");
-        led.classList.add("segment");
-        if (segment) {
-            led.classList.add("lit");
+export class LEDDigit extends Component<DigitType>{
+    segments: HTMLDivElement[] = [];
+    constructor(parent: HTMLDivElement) {
+        super(parent);
+        this.render(parent);
+    }
+    render(target: HTMLDivElement): void {
+        this.element.classList.add("digit");
+        for(let i = 0; i < 7; i++) {
+            const led = document.createElement("div");
+            led.classList.add("segment");
+            this.segments.push(led);
+            this.element.appendChild(led);
         }
-        container.appendChild(led);
-    });
-    target.appendChild(container);
-}
+        target.appendChild(this.element);
+    }
 
-export function setDigit(num: DigitType, digitGroup: HTMLElement) {
-    digitGroup.querySelectorAll(".segment").forEach((segment, index) => {
-        if (segments[num][index]) {
-            segment.classList.add("lit");
-        } else segment.classList.remove("lit");
-    });
+    update(value: DigitType): void {
+        this.segments.forEach((segment, index)=>{
+            if (segmentDefs[value][index]) {
+                segment.classList.add("lit");
+            } else {
+                segment.classList.remove("lit");
+            }
+        })
+    }
+
 }
