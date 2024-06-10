@@ -5,6 +5,9 @@
     position: relative;
 
 }
+.analog-clock > *{
+    pointer-events: none;
+}
 .analog-clock::before{
     z-index: 2;
     content: "";
