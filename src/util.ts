@@ -25,3 +25,18 @@ export function sec2Time(time: number):timeObj{
         seconds: [seconds[0] as DigitType,seconds[1] as DigitType]
     };
 }
+export function str2Time(time: string):timeObj{
+    const paddedTime = time.padStart(6,"0");
+    return{
+        hours: [paddedTime[0] as DigitType, paddedTime[1] as DigitType],
+        minutes: [paddedTime[2] as DigitType, paddedTime[3] as DigitType],
+        seconds: [paddedTime[4] as DigitType, paddedTime[5] as DigitType]
+    }
+}
+export function str2Secs(time: string){
+    const paddedTime = time.padStart(6, "0");
+    const hours = Number(paddedTime.slice(0, 2));
+    const minutes = Number(paddedTime.slice(2, 4));
+    const seconds = Number(paddedTime.slice(4, 6));
+    return hours * 3600 + minutes * 60 + seconds;
+}
