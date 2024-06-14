@@ -1,4 +1,4 @@
-export abstract class Component<T> {
+export abstract class Component {
     element: HTMLDivElement;
     parent: HTMLDivElement;
     protected constructor(parent: HTMLDivElement) {
@@ -17,5 +17,5 @@ export abstract class Component<T> {
         this.element.classList.remove("hidden");
         this.element.classList.remove("fading");
     }
-    abstract update(value: T):void;
+
 }

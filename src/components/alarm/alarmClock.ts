@@ -4,10 +4,13 @@ import {timeObj} from "../../util.ts";
 import {SignalProvider} from "../../SignalProvider.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
 import {blankTime} from "../../global.ts";
+import {TimeInputAdapter} from "../timeInputAdapter.ts";
 
 export class AlarmClock extends Clock<timeObj>{
     setButton? : HTMLButtonElement;
     timeView?: LEDTime;
+    inputAdapter?: TimeInputAdapter;
+    input?: HTMLInputElement;
     constructor(parent: HTMLDivElement, timeSource: SignalProvider<timeObj>) {
         super("alarm", parent, timeSource);
         this.render(parent);
@@ -19,6 +22,9 @@ export class AlarmClock extends Clock<timeObj>{
         this.timeView = new LEDTime(timeContainer);
         this.timeView.update({hours: ["1","2"], minutes:["0","0"], seconds:["0","0"]});
         this.timeView.show();
+        this.input = document.createElement("input");
+        this.input.classList.add("time-input");
+        timeContainer.appendChild(this.input);
 
         this.element.appendChild(timeContainer);
 

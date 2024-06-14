@@ -1,5 +1,5 @@
 import "./styles.css";
-import {Component} from "../../Component.ts";
+import {ReactiveComponent} from "../../ReactiveComponent.ts";
 
 const segmentDefs = {
     " ": [false, false, false, false, false, false, false],
@@ -16,7 +16,7 @@ const segmentDefs = {
 };
 export type DigitType = keyof typeof segmentDefs;
 
-export class LEDDigit extends Component<DigitType>{
+export class LEDDigit extends ReactiveComponent<DigitType>{
     segments: HTMLDivElement[] = [];
     constructor(parent: HTMLDivElement) {
         super(parent);

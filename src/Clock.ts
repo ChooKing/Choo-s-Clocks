@@ -1,8 +1,8 @@
-import {Component} from "./components/Component.ts";
 import {SignalProvider} from "./SignalProvider.ts";
+import {ReactiveComponent} from "./components/ReactiveComponent.ts";
 
 
-export abstract class Clock<T> extends Component<T>{
+export abstract class Clock<T> extends ReactiveComponent<T>{
     name: string;
     timeSource: SignalProvider<T>;
 
