@@ -1,6 +1,7 @@
 :root{
   color-scheme: dark;
   --led-color: rgb(6, 136, 228);
+  --inactive-color: rgba(53, 49, 49, 0.3);
 }
 *{
   margin: 0;
