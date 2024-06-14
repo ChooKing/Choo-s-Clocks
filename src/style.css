@@ -113,3 +113,6 @@
 .hidden{
   display: none;
 }
+.invisible{
+  opacity: 0; /*Used separately from fading*/
+}
