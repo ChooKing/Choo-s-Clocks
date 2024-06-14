@@ -1,5 +1,5 @@
 import {Component} from "./Component.ts";
 
-export abstract class ReactiveComponent<T> extends Component{
-    abstract update(value: T):void;
+export abstract class ReactiveComponent<U, T extends HTMLElement> extends Component<T>{
+    abstract update(value: U):void;
 }

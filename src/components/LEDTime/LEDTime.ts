@@ -4,7 +4,7 @@ import {LEDDigit} from "./LEDDigit/LEDDigit.ts";
 import {timeObj} from "../../util.ts";
 import {ReactiveComponent} from "../ReactiveComponent.ts";
 
-export class LEDTime extends ReactiveComponent<timeObj>{
+export class LEDTime extends ReactiveComponent<timeObj, HTMLDivElement>{
     digits = {} as Record<"hours"|"minutes"|"seconds", LEDDigit[]>;
     constructor(parent: HTMLDivElement) {
         super(parent);

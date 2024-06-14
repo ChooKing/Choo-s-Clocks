@@ -1,16 +1,17 @@
 import "./styles.css";
 import {Clock} from "../../Clock.ts";
-import {timeObj} from "../../util.ts";
+import {str2Time, timeObj} from "../../util.ts";
 import {SignalProvider} from "../../SignalProvider.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
 import {blankTime} from "../../global.ts";
-import {TimeInputAdapter} from "../timeInputAdapter.ts";
+import {TimeInput} from "../Input/timeInput.ts";
+
+
 
 export class AlarmClock extends Clock<timeObj>{
     setButton? : HTMLButtonElement;
     timeView?: LEDTime;
-    inputAdapter?: TimeInputAdapter;
-    input?: HTMLInputElement;
+    input?: TimeInput;
     constructor(parent: HTMLDivElement, timeSource: SignalProvider<timeObj>) {
         super("alarm", parent, timeSource);
         this.render(parent);
@@ -22,9 +23,10 @@ export class AlarmClock extends Clock<timeObj>{
         this.timeView = new LEDTime(timeContainer);
         this.timeView.update({hours: ["1","2"], minutes:["0","0"], seconds:["0","0"]});
         this.timeView.show();
-        this.input = document.createElement("input");
-        this.input.classList.add("time-input");
-        timeContainer.appendChild(this.input);
+        this.input = new TimeInput(timeContainer, (value: string)=>{this.showAlarmTime(value)});
+        this.input.show();
+
+
 
         this.element.appendChild(timeContainer);
 
@@ -39,6 +41,7 @@ export class AlarmClock extends Clock<timeObj>{
     }
     set(){
         this.timeView?.update(blankTime);
+        this.input?.element.focus();
     }
     show(){
         super.show();
@@ -48,6 +51,9 @@ export class AlarmClock extends Clock<timeObj>{
         super.hide();
         setTimeout(()=>{this.element.classList.remove("visible");}, 500);
 
+    }
+    showAlarmTime(value: string){
+        this.timeView?.update(str2Time(value));
     }
     update(value: timeObj): void {
         console.log(value);

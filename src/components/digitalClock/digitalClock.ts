@@ -5,7 +5,7 @@ import {timeObj} from "../../util.ts";
 import {SignalProvider} from "../../SignalProvider.ts";
 
 export class DigitalClock extends Clock<timeObj>{
-    timeView?: LEDTime;
+    timeView!: LEDTime;
     constructor(parent: HTMLDivElement, timeSource: SignalProvider<timeObj>) {
         super("digital", parent, timeSource);
         this.render(parent);
@@ -19,7 +19,7 @@ export class DigitalClock extends Clock<timeObj>{
     }
 
     update(time: timeObj): void {
-        this.timeView!.update(time);
+        this.timeView.update(time);
         //updateTime(time, this.element.querySelector(".led-time") as HTMLDivElement);
     }
     show(){

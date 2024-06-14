@@ -16,7 +16,7 @@ const segmentDefs = {
 };
 export type DigitType = keyof typeof segmentDefs;
 
-export class LEDDigit extends ReactiveComponent<DigitType>{
+export class LEDDigit extends ReactiveComponent<DigitType, HTMLDivElement>{
     segments: HTMLDivElement[] = [];
     constructor(parent: HTMLDivElement) {
         super(parent);

@@ -1,6 +1,6 @@
 import {Component} from "../Component.ts";
 
-export abstract class Input<T> extends Component{
+export abstract class Input<T> extends Component<HTMLInputElement>{
     _value!: T;
     callback: (value: T) => void;
     constructor(parent: HTMLDivElement, callback: (value: T) => void) {

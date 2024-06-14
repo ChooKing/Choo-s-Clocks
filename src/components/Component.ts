@@ -1,8 +1,8 @@
-export abstract class Component {
-    element: HTMLElement;
+export abstract class Component<T extends HTMLElement> {
+    element: T;
     parent: HTMLDivElement;
     protected constructor(parent: HTMLDivElement, elementType:string = "div") {
-        this.element = document.createElement(elementType);
+        this.element = document.createElement(elementType) as T;
         this.element.classList.add("hidden");
         this.parent = parent;
     }
