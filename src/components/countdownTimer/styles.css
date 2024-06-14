@@ -106,8 +106,12 @@
     align-items: center;
     gap: 1rem;
 }
-.digital-display{
+.countdown-clock .time-container{
     width: 100%;
+    position: relative;
+}
+.countdown-clock .time-container .time-input{
+    position: absolute;
 }
 .countdown-clock .buttons{
     display: flex;

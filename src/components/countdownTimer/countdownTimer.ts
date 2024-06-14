@@ -1,9 +1,12 @@
 import "./styles.css";
 import {Clock} from "../../Clock.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
-import {sec2Time} from "../../util.ts";
+import {sec2Time, str2Time, timeObj} from "../../util.ts";
 import {SignalProvider} from "../../SignalProvider.ts";
+import {TimeInput} from "../Input/timeInput.ts";
+import {nullTime} from "../../global.ts";
 const buttonStates = {
+    //set, start, pause, resume, stop
     set:[false, true, false,false,false],
     stop: [true, false, false,false,false],
     run:[false, false, true,false, true],
@@ -15,7 +18,8 @@ export class CountdownTimer extends Clock<number>{
     elapsed: number;
     lastUpdate: number;
     timerState: timerStates;
-    timeView?: LEDTime;
+    timeView!: LEDTime;
+    input!: TimeInput;
     constructor(parent: HTMLDivElement, timeSource: SignalProvider<number>) {
         super("countdown", parent, timeSource);
         this.render(parent);
@@ -61,9 +65,17 @@ export class CountdownTimer extends Clock<number>{
 
         const controls = document.createElement("div");
         controls.classList.add("controls");
-
-        this.timeView = new LEDTime(controls);
+        const timeContainer = document.createElement("div");
+        timeContainer.classList.add("time-container");
+        this.timeView = new LEDTime(timeContainer);
+        this.timeView.update(nullTime);
         this.timeView.show();
+        this.input = new TimeInput(timeContainer,(value: string)=>{this.showSetTime(str2Time(value))});
+
+
+
+
+        controls.appendChild(timeContainer);
 
         //BUTTONS
         const buttons = document.createElement("div");
@@ -71,7 +83,12 @@ export class CountdownTimer extends Clock<number>{
         const setButton = document.createElement("button");
         setButton.textContent = "set";
         setButton.addEventListener("click",()=>{
-            this.setDuration(65);
+            this.input.reset();
+            this.timeView.update(nullTime);
+            this.input.show();
+            this.input.element.focus();
+            this.setState("set");
+
         });
         buttons.appendChild(setButton);
         const startButton = document.createElement("button");
@@ -106,6 +123,8 @@ export class CountdownTimer extends Clock<number>{
     }
     setState(state: timerStates){
         if(state === "start"){
+            this.duration = this.input.time *1000;
+            console.log(this.duration);
             this.lastUpdate = this.timeSource.value ?? Date.now();
             this.timeSource.subscribe(this.name,(time)=>{
                 this.update(time);
@@ -118,8 +137,9 @@ export class CountdownTimer extends Clock<number>{
         }
         else if(state === "stop"){
             this.timeSource.unsubscribe(this.name);
-            this.setDuration(0);
+            this.duration = 0;
             this.element.style.setProperty("--percent-remaining", "0%");
+            this.timeView.update(nullTime);
         }
         else if(state === "resume"){
             this.lastUpdate = this.timeSource.value ?? Date.now();
@@ -143,15 +163,9 @@ export class CountdownTimer extends Clock<number>{
         });
         this.timerState = state;
     }
-    setDuration(num: number){
-        this.duration = num * 1000;
-        this.setState("set");
-        const time = sec2Time(num);
-        this.timeView?.update(time);
-        //updateTime(time, this.element.querySelector(".led-time") as HTMLDivElement);
-        if(num !== 0) this.element.style.setProperty("--percent-remaining", "100%");
+    showSetTime(value: timeObj){
+        this.timeView.update(value);
     }
-
     update(time: number): void {
         if(this.timerState === "run"){
             this.elapsed += time - this.lastUpdate;
@@ -159,7 +173,7 @@ export class CountdownTimer extends Clock<number>{
             const percentRemaining = (timeRemaining / this.duration) * 100;
             this.element.style.setProperty("--percent-remaining", percentRemaining+"%");
             const remainingObj = sec2Time(Math.round(timeRemaining / 1000));
-            this.timeView?.update(remainingObj);
+            this.timeView.update(remainingObj);
             if(this.elapsed >= this.duration){
                 this.setState("stop");
                 console.log("finished");
