@@ -4,7 +4,7 @@ import {LEDTime} from "../LEDTime/LEDTime.ts";
 import {sec2Time, str2Time, timeObj} from "../../util.ts";
 import {SignalProvider} from "../../SignalProvider.ts";
 import {TimeInput} from "../Input/timeInput.ts";
-import {nullTime} from "../../global.ts";
+import {blankTime, nullTime} from "../../global.ts";
 const buttonStates = {
     //set, start, pause, resume, stop
     set:[false, true, false,false,false],
@@ -84,7 +84,7 @@ export class CountdownTimer extends Clock<number>{
         setButton.textContent = "set";
         setButton.addEventListener("click",()=>{
             this.input.reset();
-            this.timeView.update(nullTime);
+            this.timeView.update(blankTime);
             this.input.show();
             this.input.element.focus();
             this.setState("set");
