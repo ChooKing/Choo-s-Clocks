@@ -10,7 +10,6 @@ export function setCurrentClock(name: clockNameType){
         clocks[clockSettings.currentClock].hide();
     }
     clockSettings.currentClock = name;
-    console.log(clocks[name]);
     setTimeout(()=>{
         clocks[name].show();
     },750);
