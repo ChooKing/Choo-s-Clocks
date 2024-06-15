@@ -34,7 +34,9 @@
     color: var(--inactive-color);
 }
 .digital-clock .pm-view{
-
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     font-size: 3vmin;
 }
 .digital-clock .pm-view.am > div:nth-child(1){
