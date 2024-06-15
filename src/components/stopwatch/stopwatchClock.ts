@@ -6,7 +6,7 @@ import {sec2Time} from "../../util.ts";
 import {DigitType, LEDDigit} from "../LEDTime/LEDDigit/LEDDigit.ts";
 import {nullTime} from "../../global.ts";
 
-export class StopwatchClock extends Clock<number>{
+export class StopwatchClock extends Clock{
     elapsed = 0;
     lastUpdate = 0;
     isRunning = false;
@@ -15,8 +15,9 @@ export class StopwatchClock extends Clock<number>{
     startButton?: HTMLButtonElement;
     stopButton?: HTMLButtonElement;
     clearButton?: HTMLButtonElement;
+    timeSource: SignalProvider<number>;
     constructor(parent: HTMLDivElement, timeSource: SignalProvider<number>) {
-        super("stopwatch",parent, timeSource);
+        super("stopwatch",parent);
         this.timeSource = timeSource;
         this.render(parent);
     }

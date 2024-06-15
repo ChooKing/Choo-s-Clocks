@@ -6,15 +6,17 @@ import {SignalProvider} from "../../SignalProvider.ts";
 import {Toggle} from "../Input/toggle/toggle.ts";
 import {PMView} from "../ampm/pmView.ts";
 
-export class DigitalClock extends Clock<timeObj>{
+export class DigitalClock extends Clock{
     timeView!: LEDTime;
     pmToggle!: Toggle;
     pmView!: PMView;
+    formattedTime: SignalProvider<timeObj>;
     constructor(parent: HTMLDivElement, timeSource: SignalProvider<timeObj>) {
-        super("digital", parent, timeSource);
+        super("digital", parent);
         this.render(parent);
+        this.formattedTime = timeSource;
     }
-    render(target: HTMLDivElement) {
+    render(target: HTMLDivElement){
         this.element.classList.add("digital-clock");
         const timeContainer = document.createElement("div");
         timeContainer.classList.add("time-container");
@@ -42,13 +44,13 @@ export class DigitalClock extends Clock<timeObj>{
     show(){
         super.show();
         this.element.classList.add("flex");
-        this.timeSource.subscribe(this.name, (time)=>{
+        this.formattedTime.subscribe(this.name, (time)=>{
             this.update(time);
         })
     }
     hide(){
         super.hide();
         this.element.classList.remove("flex");
-        this.timeSource.unsubscribe(this.name);
+        this.formattedTime.unsubscribe(this.name);
     }
 }

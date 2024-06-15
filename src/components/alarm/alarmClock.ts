@@ -8,13 +8,15 @@ import {TimeInput} from "../Input/timeInput.ts";
 
 
 
-export class AlarmClock extends Clock<timeObj>{
+export class AlarmClock extends Clock{
     setButton? : HTMLButtonElement;
     timeView?: LEDTime;
     input?: TimeInput;
+    rawTime: SignalProvider<timeObj>;
     constructor(parent: HTMLDivElement, timeSource: SignalProvider<timeObj>) {
-        super("alarm", parent, timeSource);
+        super("alarm", parent);
         this.render(parent);
+        this.rawTime = timeSource;
     }
     render(target: HTMLDivElement): void {
         this.element.classList.add("alarm-clock");

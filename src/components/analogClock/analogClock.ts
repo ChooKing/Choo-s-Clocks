@@ -15,13 +15,15 @@ const numerals = {
     arabic: ["12","1","2","3","4","5","6","7","8","9","10","11"],
     roman: ["XII","I","II","III","IV","V","VI","VII","VIII","IX","X","XI"]
 }
-export class AnalogClock extends Clock<Date>{
+export class AnalogClock extends Clock{
     hourRef?: HTMLDivElement;
     minuteRef?: HTMLDivElement;
     secondRef?: HTMLDivElement;
+    dateSource: SignalProvider<Date>;
     constructor(parent: HTMLDivElement, timeSource: SignalProvider<Date>) {
-        super("analog", parent, timeSource);
+        super("analog", parent);
         this.render(parent);
+        this.dateSource = timeSource;
     }
     update(time: Date) {
         this.hourRef!.style.setProperty("--hour-angle", hourAngle(time) + "deg");
@@ -30,7 +32,7 @@ export class AnalogClock extends Clock<Date>{
     }
     show() {
         super.show();
-        this.timeSource.subscribe(this.name, (time)=>{
+        this.dateSource.subscribe(this.name, (time)=>{
             this.update(time);
         });
     }

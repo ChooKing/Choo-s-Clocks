@@ -13,21 +13,24 @@ const buttonStates = {
     pause:[false, false, false,true,true]
 }
 type timerStates = keyof typeof buttonStates | "start" | "resume";
-export class CountdownTimer extends Clock<number>{
+export class CountdownTimer extends Clock{
     duration: number;
     elapsed: number;
     lastUpdate: number;
     timerState: timerStates;
     timeView!: LEDTime;
     input!: TimeInput;
+    timeSource: SignalProvider<number>;
     constructor(parent: HTMLDivElement, timeSource: SignalProvider<number>) {
-        super("countdown", parent, timeSource);
+        super("countdown", parent);
+        this.timeSource = timeSource;
         this.render(parent);
         this.duration = 0;
         this.elapsed = 0;
         this.lastUpdate = 0;
         this.timerState = "stop";
         this.setState("stop");
+
     }
 
     render(target: HTMLDivElement): void {

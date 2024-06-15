@@ -14,11 +14,19 @@
     display: flex;
     gap: 1vmin;
     align-items: flex-end;
+    position: relative;
 }
 .alarm-clock .time-container .led-time{
     flex: 1;
 }
-
+.alarm-clock .time-container .time-input{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: transparent;
+}
 .alarm-clock .controls{
     grid-area: 3/1/4/2;
     align-self: start;
