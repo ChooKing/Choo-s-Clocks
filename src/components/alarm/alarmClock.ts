@@ -1,10 +1,10 @@
 import "./styles.css";
 import {Clock} from "../../Clock.ts";
-import {str2Time, timeObj} from "../../util.ts";
-import {SignalProvider} from "../../SignalProvider.ts";
+import {str2Time, timeNumObj, timeStrObj} from "../../util.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
 import {blankTime} from "../../global.ts";
 import {TimeInput} from "../Input/timeInput.ts";
+import {SignalMap} from "../../SignalMap.ts";
 
 
 
@@ -12,8 +12,8 @@ export class AlarmClock extends Clock{
     setButton? : HTMLButtonElement;
     timeView?: LEDTime;
     input?: TimeInput;
-    rawTime: SignalProvider<timeObj>;
-    constructor(parent: HTMLDivElement, timeSource: SignalProvider<timeObj>) {
+    rawTime: SignalMap<timeNumObj, timeStrObj>;
+    constructor(parent: HTMLDivElement, timeSource: SignalMap<timeNumObj, timeStrObj>) {
         super("alarm", parent);
         this.render(parent);
         this.rawTime = timeSource;
@@ -57,7 +57,7 @@ export class AlarmClock extends Clock{
     showAlarmTime(value: string){
         this.timeView?.update(str2Time(value));
     }
-    update(value: timeObj): void {
+    update(value: timeStrObj): void {
         console.log(value);
     }
 

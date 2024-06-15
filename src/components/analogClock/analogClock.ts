@@ -1,14 +1,15 @@
 import "./styles.css";
 import {Clock} from "../../Clock.ts";
-import {SignalProvider} from "../../SignalProvider.ts";
-function hourAngle(timeData: Date){
-    return (timeData.getHours() * 30) + (timeData.getMinutes() * 0.5);
+import {SignalMap} from "../../SignalMap.ts";
+import {timeNumObj} from "../../util.ts";
+function hourAngle(time: timeNumObj){
+    return (time.hours * 30) + (time.minutes * 0.5);
 }
-function minuteAngle(timeData: Date){
-    return (timeData.getMinutes() * 6) + (timeData.getSeconds() * 0.1);
+function minuteAngle(time: timeNumObj){
+    return (time.minutes * 6) + (time.seconds * 0.1);
 }
-function secondsAngle(timeData: Date){
-    return (timeData.getMilliseconds() * 0.006) + (timeData.getSeconds() * 6);
+function secondsAngle(time: timeNumObj){
+    return (time.millis * 0.006) + (time.seconds * 6);
 }
 export type numeralType="arabic"|"roman";
 const numerals = {
@@ -19,13 +20,13 @@ export class AnalogClock extends Clock{
     hourRef?: HTMLDivElement;
     minuteRef?: HTMLDivElement;
     secondRef?: HTMLDivElement;
-    dateSource: SignalProvider<Date>;
-    constructor(parent: HTMLDivElement, timeSource: SignalProvider<Date>) {
+    dateSource: SignalMap<Date, timeNumObj>;
+    constructor(parent: HTMLDivElement, timeSource: SignalMap<Date, timeNumObj>) {
         super("analog", parent);
         this.render(parent);
         this.dateSource = timeSource;
     }
-    update(time: Date) {
+    update(time: timeNumObj) {
         this.hourRef!.style.setProperty("--hour-angle", hourAngle(time) + "deg");
         this.minuteRef!.style.setProperty("--minute-angle", minuteAngle(time) + "deg");
         this.secondRef!.style.setProperty("--second-angle", secondsAngle(time) + "deg");

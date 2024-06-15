@@ -1,10 +1,10 @@
 import "./styles.css";
 import {Clock} from "../../Clock.ts";
-import {SignalProvider} from "../../SignalProvider.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
-import {sec2Time} from "../../util.ts";
+import {sec2StrTime} from "../../util.ts";
 import {DigitType, LEDDigit} from "../LEDTime/LEDDigit/LEDDigit.ts";
 import {nullTime} from "../../global.ts";
+import {SignalMap} from "../../SignalMap.ts";
 
 export class StopwatchClock extends Clock{
     elapsed = 0;
@@ -15,8 +15,8 @@ export class StopwatchClock extends Clock{
     startButton?: HTMLButtonElement;
     stopButton?: HTMLButtonElement;
     clearButton?: HTMLButtonElement;
-    timeSource: SignalProvider<number>;
-    constructor(parent: HTMLDivElement, timeSource: SignalProvider<number>) {
+    timeSource: SignalMap<Date, number>;
+    constructor(parent: HTMLDivElement, timeSource: SignalMap<Date, number>) {
         super("stopwatch",parent);
         this.timeSource = timeSource;
         this.render(parent);
@@ -104,7 +104,7 @@ export class StopwatchClock extends Clock{
     }
     update(time: number): void {
         this.elapsed += (time - this.lastUpdate);
-        const timeStrings = sec2Time(Math.round(this.elapsed /1000));
+        const timeStrings = sec2StrTime(Math.round(this.elapsed /1000));
         this.timeView?.update(timeStrings);
 
         const centisecondStr = String(Math.round((this.elapsed % 1000) / 10)).padStart(2,"0");

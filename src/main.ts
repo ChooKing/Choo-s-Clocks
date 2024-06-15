@@ -1,6 +1,6 @@
 import "./style.css";
-import {clockNameType, clockSettings, clockNames, clocks, signals} from "./global.ts";
-import {sec2Time} from "./util.ts";
+import {clockNameType, clockSettings, clockNames, clocks, dateTimeSignal} from "./global.ts";
+
 
 
 export function setCurrentClock(name: clockNameType){
@@ -17,12 +17,12 @@ export function setCurrentClock(name: clockNameType){
 
 setInterval(()=>{
     const now = new Date();
-    const rawTime = (now.getHours()*3600 + now.getMinutes()* 60 + now.getSeconds()) * 1000 + now.getMilliseconds();
-    signals.rawTimeSignal.notify(rawTime);
-    signals.dateTimeSignal.notify(now);
-    signals.formattedTimeSignal.notify(sec2Time(Math.round(rawTime/1000)));
+    //const rawTime = (now.getHours()*3600 + now.getMinutes()* 60 + now.getSeconds()) * 1000 + now.getMilliseconds();
+    //rawTimeSignal.setValue(rawTime);
+    dateTimeSignal.setValue(now);
+    //signals.formattedTimeSignal.setValue(sec2Time(Math.round(rawTime/1000)));
 }, 115);
-setCurrentClock("digital");
+setCurrentClock("countdown");
 
 const textRing = document.querySelector(".text-ring") as HTMLDivElement;
 textRing.addEventListener("click", (e)=>{

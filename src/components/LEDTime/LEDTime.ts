@@ -1,10 +1,10 @@
 import "./styles.css";
 
 import {LEDDigit} from "./LEDDigit/LEDDigit.ts";
-import {timeObj} from "../../util.ts";
+import {timeStrObj} from "../../util.ts";
 import {ReactiveComponent} from "../ReactiveComponent.ts";
 
-export class LEDTime extends ReactiveComponent<timeObj, HTMLDivElement>{
+export class LEDTime extends ReactiveComponent<timeStrObj, HTMLDivElement>{
     digits = {} as Record<"hours"|"minutes"|"seconds", LEDDigit[]>;
     constructor(parent: HTMLDivElement) {
         super(parent);
@@ -31,7 +31,7 @@ export class LEDTime extends ReactiveComponent<timeObj, HTMLDivElement>{
         this.element.appendChild(colon);
     }
 
-    update(value: timeObj): void {
+    update(value: timeStrObj): void {
         this.digits.hours[0].update(value.hours[0]);
         this.digits.hours[1].update(value.hours[1]);
         this.digits.minutes[0].update(value.minutes[0]);

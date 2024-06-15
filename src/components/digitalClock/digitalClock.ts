@@ -1,17 +1,17 @@
 import "./styles.css";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
 import {Clock} from "../../Clock.ts";
-import {timeObj} from "../../util.ts";
-import {SignalProvider} from "../../SignalProvider.ts";
+import {timeNumObj, timeStrObj} from "../../util.ts";
 import {Toggle} from "../Input/toggle/toggle.ts";
 import {PMView} from "../ampm/pmView.ts";
+import {SignalMap} from "../../SignalMap.ts";
 
 export class DigitalClock extends Clock{
     timeView!: LEDTime;
     pmToggle!: Toggle;
     pmView!: PMView;
-    formattedTime: SignalProvider<timeObj>;
-    constructor(parent: HTMLDivElement, timeSource: SignalProvider<timeObj>) {
+    formattedTime: SignalMap<timeNumObj, timeStrObj>;
+    constructor(parent: HTMLDivElement, timeSource: SignalMap<timeNumObj, timeStrObj>) {
         super("digital", parent);
         this.render(parent);
         this.formattedTime = timeSource;
@@ -38,7 +38,7 @@ export class DigitalClock extends Clock{
         target.appendChild(this.element);
     }
 
-    update(time: timeObj): void {
+    update(time: timeStrObj): void {
         this.timeView.update(time);
     }
     show(){

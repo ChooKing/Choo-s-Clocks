@@ -5,14 +5,18 @@ export class SignalProvider<T> {
         this.callbacks = [];
         this._value = null;
     }
-    notify(value: T){
+    setValue(value: T){
         this._value = value;
+        this.notify();
+    }
+    notify(){
         Object.values(this.callbacks).forEach(item=>{
-            item.callback(value);
+            item.callback(this._value!);
         })
     }
     subscribe(name: string, callback: (value: T) => void){
         this.callbacks.push({name, callback});
+        callback(this.value!);
     }
     unsubscribe(name: string){
         this.callbacks = this.callbacks.filter(item => item.name !== name);

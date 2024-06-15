@@ -1,10 +1,10 @@
 import "./styles.css";
 import {Clock} from "../../Clock.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
-import {sec2Time, str2Time, timeObj} from "../../util.ts";
-import {SignalProvider} from "../../SignalProvider.ts";
+import {sec2StrTime, str2Time, timeStrObj} from "../../util.ts";
 import {TimeInput} from "../Input/timeInput.ts";
 import {blankTime, nullTime} from "../../global.ts";
+import {SignalMap} from "../../SignalMap.ts";
 const buttonStates = {
     //set, start, pause, resume, stop
     set:[false, true, false,false,false],
@@ -20,8 +20,8 @@ export class CountdownTimer extends Clock{
     timerState: timerStates;
     timeView!: LEDTime;
     input!: TimeInput;
-    timeSource: SignalProvider<number>;
-    constructor(parent: HTMLDivElement, timeSource: SignalProvider<number>) {
+    timeSource: SignalMap<Date, number>;
+    constructor(parent: HTMLDivElement, timeSource: SignalMap<Date, number>) {
         super("countdown", parent);
         this.timeSource = timeSource;
         this.render(parent);
@@ -127,7 +127,6 @@ export class CountdownTimer extends Clock{
     setState(state: timerStates){
         if(state === "start"){
             this.duration = this.input.time *1000;
-            console.log(this.duration);
             this.lastUpdate = this.timeSource.value ?? Date.now();
             this.timeSource.subscribe(this.name,(time)=>{
                 this.update(time);
@@ -166,7 +165,7 @@ export class CountdownTimer extends Clock{
         });
         this.timerState = state;
     }
-    showSetTime(value: timeObj){
+    showSetTime(value: timeStrObj){
         this.timeView.update(value);
     }
     update(time: number): void {
@@ -175,7 +174,7 @@ export class CountdownTimer extends Clock{
             const timeRemaining = this.duration - this.elapsed;
             const percentRemaining = (timeRemaining / this.duration) * 100;
             this.element.style.setProperty("--percent-remaining", percentRemaining+"%");
-            const remainingObj = sec2Time(Math.round(timeRemaining / 1000));
+            const remainingObj = sec2StrTime(Math.round(timeRemaining / 1000));
             this.timeView.update(remainingObj);
             if(this.elapsed >= this.duration){
                 this.setState("stop");
