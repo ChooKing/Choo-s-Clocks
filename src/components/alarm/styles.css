@@ -13,28 +13,85 @@
     width: 100%;
     display: flex;
     gap: 1vmin;
-    align-items: flex-end;
     position: relative;
+
 }
 .alarm-clock .time-container .led-time{
     flex: 1;
 }
 .alarm-clock .time-container .time-input{
     position: absolute;
-    width: 100%;
+    border: 1px solid red;
+    width: 92%;
     height: 100%;
-    left: 0;
+    right: 0;
     top: 0;
     background-color: transparent;
 }
+.alarm-clock .pm-view input[type="checkbox"]{
+    display: none;
+}
+.alarm-clock .pm-view{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 3vmin;
+}
+
+
+.alarm-clock .pm-view.am > label:nth-of-type(1){
+    color: var(--led-color);
+}
+.alarm-clock .pm-view.am > label:nth-of-type(2){
+    color: var(--inactive-color);
+}
+.alarm-clock .pm-view.pm > label:nth-of-type(1){
+    color: var(--inactive-color);
+}
+.alarm-clock .pm-view.pm > label:nth-of-type(2){
+    color: var(--led-color);
+}
+.alarm-clock .pm-view.h24{
+    color: var(--inactive-color);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 .alarm-clock .controls{
     grid-area: 3/1/4/2;
     align-self: start;
     display: flex;
+    /*flex-direction: column;*/
     justify-items: center;
     gap: 1vmin;
 }
 .alarm-clock .controls button{
     font-size: 3vmin;
     padding: 1vmin;
+}
+
+.alarm-clock .controls input[type="checkbox"]{
+    display: none;
+}
+.alarm-clock .controls input[type="checkbox"] ~ label:nth-of-type(1){
+    color: var(--led-color);
+}
+.alarm-clock .controls input[type="checkbox"] ~ label:nth-of-type(2){
+    color: var(--inactive-color);
+}
+.alarm-clock .controls input[type="checkbox"]:checked ~ label:nth-of-type(1){
+    color: var(--inactive-color);
+}
+.alarm-clock .controls input[type="checkbox"]:checked ~ label:nth-of-type(2){
+    color: var(--led-color);
 }
