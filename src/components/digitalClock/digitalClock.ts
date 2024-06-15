@@ -29,7 +29,7 @@ export class DigitalClock extends Clock{
 
         const controls = document.createElement("div");
         controls.classList.add("controls");
-        this.pmToggle = new Toggle(controls, ()=>{
+        this.pmToggle = new Toggle(controls,"digital-24", ()=>{
             clockSettings.hr24 = !clockSettings.hr24;
         }, "12H", "24H");
         this.pmToggle.update(clockSettings.hr24);
@@ -57,7 +57,8 @@ export class DigitalClock extends Clock{
         this.element.classList.add("flex");
         this.formattedTime.subscribe(this.name, (time)=>{
             this.update(time);
-        })
+        });
+        this.pmToggle.update(clockSettings.hr24);
     }
     hide(){
         super.hide();
