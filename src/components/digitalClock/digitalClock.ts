@@ -5,6 +5,7 @@ import {timeNumObj, timeStrObj} from "../../util.ts";
 import {Toggle} from "../Input/toggle/toggle.ts";
 import {PMView} from "../ampm/pmView.ts";
 import {SignalMap} from "../../SignalMap.ts";
+import {clockSettings} from "../../global.ts";
 
 export class DigitalClock extends Clock{
     timeView!: LEDTime;
@@ -22,15 +23,16 @@ export class DigitalClock extends Clock{
         timeContainer.classList.add("time-container");
         this.pmView = new PMView(timeContainer);
         this.pmView.show();
-        this.pmView.update("h24");
-
         this.timeView = new LEDTime(timeContainer);
         this.timeView.show();
         this.element.appendChild(timeContainer);
 
         const controls = document.createElement("div");
         controls.classList.add("controls");
-        this.pmToggle = new Toggle(controls, ()=>{}, "12H", "24H");
+        this.pmToggle = new Toggle(controls, ()=>{
+            clockSettings.hr24 = !clockSettings.hr24;
+        }, "12H", "24H");
+        this.pmToggle.update(clockSettings.hr24);
         this.pmToggle.show();
         controls.appendChild(this.pmToggle.element);
 
@@ -40,6 +42,15 @@ export class DigitalClock extends Clock{
 
     update(time: timeStrObj): void {
         this.timeView.update(time);
+        if(clockSettings.hr24){
+            this.pmView.update("h24");
+        }
+        else if(time.pm){
+            this.pmView.update("pm");
+        }
+        else{
+            this.pmView.update("am");
+        }
     }
     show(){
         super.show();

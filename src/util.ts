@@ -14,6 +14,7 @@ export type timeStrObj ={
     hours: DigitType[];
     minutes: DigitType[];
     seconds: DigitType[];
+    pm?: boolean;
 }
 export type timeNumObj = {
     hours: number;
@@ -54,13 +55,14 @@ export function str2Secs(time: string){
     const seconds = Number(paddedTime.slice(4, 6));
     return hours * 3600 + minutes * 60 + seconds;
 }
-export function num2StrTimeObj(time: timeNumObj): timeStrObj{
-    const hours = String(time.hours).padStart(2,"0");
+export function num2StrTimeObj(time: timeNumObj, h24: boolean = true): timeStrObj{
+    const hours = String(h24? time.hours : time.hours % 12).padStart(2,"0");
     const minutes = String(time.minutes).padStart(2,"0");
     const seconds = String(time.seconds).padStart(2,"0");
     return {
         hours: [hours[0] as DigitType, hours[1] as DigitType],
         minutes: [minutes[0] as DigitType,minutes[1] as DigitType],
-        seconds: [seconds[0] as DigitType,seconds[1] as DigitType]
+        seconds: [seconds[0] as DigitType,seconds[1] as DigitType],
+        pm:time.hours >= 12
     }
 }

@@ -1,15 +1,13 @@
 import "./style.css";
-import {clockNameType, clockSettings, clockNames, clocks, dateTimeSignal} from "./global.ts";
+import {clockNameType, clockNames, clocks, dateTimeSignal} from "./global.ts";
 
-
+let currentClock: clockNameType = "digital";
 
 export function setCurrentClock(name: clockNameType){
     const textRing = document.querySelector(".text-ring") as HTMLDivElement;
     textRing.style.setProperty("--rotation", String(clockNames.findIndex(item=>item === name) * (-360 / clockNames.length) + 90)+"deg");
-    if(clockSettings.currentClock){
-        clocks[clockSettings.currentClock].hide();
-    }
-    clockSettings.currentClock = name;
+    clocks[currentClock].hide();
+    currentClock = name;
     setTimeout(()=>{
         clocks[name].show();
     },750);
@@ -17,12 +15,9 @@ export function setCurrentClock(name: clockNameType){
 
 setInterval(()=>{
     const now = new Date();
-    //const rawTime = (now.getHours()*3600 + now.getMinutes()* 60 + now.getSeconds()) * 1000 + now.getMilliseconds();
-    //rawTimeSignal.setValue(rawTime);
     dateTimeSignal.setValue(now);
-    //signals.formattedTimeSignal.setValue(sec2Time(Math.round(rawTime/1000)));
 }, 115);
-setCurrentClock("countdown");
+setCurrentClock("digital");
 
 const textRing = document.querySelector(".text-ring") as HTMLDivElement;
 textRing.addEventListener("click", (e)=>{
@@ -31,4 +26,6 @@ textRing.addEventListener("click", (e)=>{
         setCurrentClock(target.textContent!.toLowerCase() as clockNameType);
     }
 
-})
+});
+
+
