@@ -5,6 +5,7 @@ import {sec2StrTime, str2Time, timeStrObj} from "../../util.ts";
 import {TimeInput} from "../Input/timeInput.ts";
 import {blankTime, nullTime} from "../../global.ts";
 import {SignalMap} from "../../SignalMap.ts";
+import {Ring} from "../../audio/ring.ts";
 const buttonStates = {
     //set, start, pause, resume, stop
     set:[false, true, false,false,false],
@@ -21,6 +22,7 @@ export class CountdownTimer extends Clock{
     timeView!: LEDTime;
     input!: TimeInput;
     timeSource: SignalMap<Date, number>;
+    ring: Ring;
     constructor(parent: HTMLDivElement, timeSource: SignalMap<Date, number>) {
         super("countdown", parent);
         this.timeSource = timeSource;
@@ -30,7 +32,7 @@ export class CountdownTimer extends Clock{
         this.lastUpdate = 0;
         this.timerState = "stop";
         this.setState("stop");
-
+        this.ring = new Ring();
     }
 
     render(target: HTMLDivElement): void {
@@ -178,6 +180,7 @@ export class CountdownTimer extends Clock{
             this.timeView.update(remainingObj);
             if(this.elapsed >= this.duration){
                 this.setState("stop");
+                this.ring.play();
                 console.log("finished");
             }
         }
