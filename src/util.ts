@@ -61,8 +61,13 @@ export function str2Secs(time: string){
     const seconds = Number(paddedTime.slice(4, 6));
     return hours * 3600 + minutes * 60 + seconds;
 }
+export function calcHours(hours: number, h24: boolean){
+    if(!hours && !h24) return 12;
+    if(h24 || hours <= 12) return hours;
+    return hours % 12;
+}
 export function num2StrTimeObj(time: timeNumObj, h24: boolean = true): timeStrObj{
-    const hours = String(h24? time.hours : time.hours % 12).padStart(2,"0");
+    const hours = String(calcHours(time.hours, h24)).padStart(2,"0");
     const minutes = String(time.minutes).padStart(2,"0");
     const seconds = String(time.seconds).padStart(2,"0");
     return {

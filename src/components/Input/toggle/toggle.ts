@@ -43,4 +43,7 @@ export class Toggle extends Component<HTMLDivElement>{
     update(value: boolean){
         this._checkbox.checked = value;
     }
+    get value(){
+        return !this._checkbox.checked? this.option1 : this.option2;
+    }
 }

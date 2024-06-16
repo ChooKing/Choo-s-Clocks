@@ -28,32 +28,33 @@
     top: 0;
     background-color: transparent;
 }
-.alarm-clock .pm-view input[type="checkbox"]{
-    display: none;
-}
+
 .alarm-clock .pm-view{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     font-size: 3vmin;
 }
-
-
-.alarm-clock .pm-view.am > label:nth-of-type(1){
+.alarm-clock .pm-view input[type="checkbox"]{
+    display: none;
+}
+.alarm-clock .pm-view input[type="checkbox"] ~ label:nth-of-type(1){
     color: var(--led-color);
 }
-.alarm-clock .pm-view.am > label:nth-of-type(2){
+.alarm-clock .pm-view input[type="checkbox"] ~ label:nth-of-type(2){
     color: var(--inactive-color);
 }
-.alarm-clock .pm-view.pm > label:nth-of-type(1){
+.alarm-clock .pm-view input[type="checkbox"]:checked ~ label:nth-of-type(1){
     color: var(--inactive-color);
 }
-.alarm-clock .pm-view.pm > label:nth-of-type(2){
+.alarm-clock .pm-view input[type="checkbox"]:checked ~ label:nth-of-type(2){
     color: var(--led-color);
 }
-.alarm-clock .pm-view.h24{
+.alarm-clock .pm-view.h24 input[type="checkbox"] ~ label, .alarm-clock .pm-view.h24 input[type="checkbox"]:checked ~ label{
     color: var(--inactive-color);
+    pointer-events: none;
 }
+
 
 
 
