@@ -21,7 +21,10 @@ export const clockSettings = {
 
 
 export const dateTimeSignal = new SignalProvider<Date>();
-const dateNumSignal = new SignalMap<Date, number>("date-num", dateTimeSignal, (input: Date)=>input.getTime());
+const dateNumSignal = new SignalMap<Date, number>("date-num", dateTimeSignal, (input: Date)=>{
+    if(input) return input.getTime();
+    return 0;
+});
 const timeNumSignal = new SignalMap<Date, timeNumObj>("raw-time",dateTimeSignal,(input: Date)=>{
     return date2NumTime(input);
 });

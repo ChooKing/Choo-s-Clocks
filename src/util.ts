@@ -23,11 +23,17 @@ export type timeNumObj = {
     millis: number;
 }
 export function date2NumTime(date: Date):timeNumObj{
-    return {
+    if(date) return {
         hours: date.getHours(),
         minutes: date.getMinutes(),
         seconds: date.getSeconds(),
         millis: date.getMilliseconds()
+    }
+    return {
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+        millis: 0
     }
 }
 export function sec2StrTime(time: number):timeStrObj{
