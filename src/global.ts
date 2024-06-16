@@ -37,7 +37,7 @@ export const clocks = {
     analog: new AnalogClock(clockContainer, timeNumSignal),
     countdown: new CountdownTimer(clockContainer, dateNumSignal),
     stopwatch: new StopwatchClock(clockContainer, dateNumSignal),
-    alarm: new AlarmClock(clockContainer, formattedTimeSignal)
+    alarm: new AlarmClock(clockContainer, timeNumSignal)
 }
 export type clockNameType = keyof typeof clocks;
 

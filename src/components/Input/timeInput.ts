@@ -2,6 +2,7 @@ import {Input} from "./input.ts";
 import {str2Secs} from "../../util.ts";
 
 export class TimeInput extends Input<string>{
+    _value: string;
     constructor(parent: HTMLDivElement, callback: (value: string) => void) {
         super(parent, callback);
         this._value = "";
@@ -30,7 +31,7 @@ export class TimeInput extends Input<string>{
             this._value += key;
         }
         this.callback(this._value);
-        console.log(this._value);
+
     }
     get time(){
         return str2Secs(this._value);

@@ -8,6 +8,7 @@ import {SignalMap} from "../../SignalMap.ts";
 import {Toggle} from "../Input/toggle/toggle.ts";
 import {H24Toggle} from "../Input/h24toggle.ts";
 import {DigitType} from "../LEDTime/LEDDigit/LEDDigit.ts";
+import {Ring} from "../../audio/ring.ts";
 
 
 
@@ -18,18 +19,20 @@ export class AlarmClock extends Clock{
     input!: TimeInput;
     h24Toggle!: Toggle;
     pmToggle!: Toggle;
-    rawTime: SignalMap<timeNumObj, timeStrObj>;
+    timeSource: SignalMap<Date, timeNumObj>;
     alarmTime = {
         hours: 0,
         minutes: 0,
         seconds: 0,
         millis: 0
     } as timeNumObj;
+    ring: Ring;
     setting = false;
-    constructor(parent: HTMLDivElement, timeSource: SignalMap<timeNumObj, timeStrObj>) {
+    constructor(parent: HTMLDivElement, timeSource: SignalMap<Date, timeNumObj>) {
         super("alarm", parent);
         this.render(parent);
-        this.rawTime = timeSource;
+        this.timeSource = timeSource;
+        this.ring = new Ring();
     }
     render(target: HTMLDivElement): void {
         this.element.classList.add("alarm-clock");
@@ -98,6 +101,7 @@ export class AlarmClock extends Clock{
         this.input.show();
         this.timeView?.update(blankTime);
         this.input.focus();
+        this.okButton.classList.remove("fading");
     }
     show(){
         super.show();
@@ -151,6 +155,8 @@ export class AlarmClock extends Clock{
         this.showAlarmTime();
         this.setting = false;
         this.okButton.disabled = true;
+        this.okButton.classList.add("fading");
+        this.enableAlarm();
     }
     showAlarmTime(){
         const displayTime = {...this.alarmTime};
@@ -159,8 +165,19 @@ export class AlarmClock extends Clock{
         }
         this.timeView.update(num2StrTimeObj(displayTime));
     }
-    update(value: timeStrObj): void {
-        console.log(value);
+    enableAlarm(){
+        this.timeSource.subscribe(this.name, (value)=>{this.update(value)});
+    }
+    update(value: timeNumObj): void {
+        if(
+            (value.hours === this.alarmTime.hours) &&
+            (value.minutes === this.alarmTime.minutes) &&
+            (value.seconds === this.alarmTime.seconds)
+        ){
+            console.log("alarm time reached");
+            this.ring.play();
+            this.timeSource.unsubscribe(this.name);
+        }
     }
 
 }
