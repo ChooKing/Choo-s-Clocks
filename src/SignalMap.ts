@@ -1,30 +1,15 @@
 import {SignalProvider} from "./SignalProvider.ts";
-
-export class SignalMap<I, O>{
-    source: SignalProvider<I>|SignalMap<any, I>;
-    callbacks: {name:string, callback: (value:O)=>void}[];
-    transform: (input: I)=>O;
+export class SignalMap<I, O> extends SignalProvider<O> {
+    transform: (value: I)=>O;
     name: string;
-    _value!: I;
-    constructor(name: string, source: SignalProvider<I>|SignalMap<any, I>, transform: (input: I)=>O) {
+    source: SignalProvider<I>;
+    constructor(name: string, source: SignalProvider<I>, transform: (value: I)=>O){
+        super();
+        this.transform = transform;
         this.name = name;
         this.source = source;
-        this.transform = transform;
-        this.callbacks = [];
-        this.source.subscribe(name, (value: I)=>{
-            this._value = value;
-            Object.values(this.callbacks).forEach(item=>{
-                item.callback(transform(value));
-            })
-        })
-    }
-    subscribe(name: string, callback: (value: O) => void){
-        this.callbacks.push({name, callback});
-    }
-    unsubscribe(name: string){
-        this.callbacks = this.callbacks.filter(item => item.name !== name);
-    }
-    get value(){
-        return this.transform(this._value);
+        this.source.subscribe(this.name, (value:I)=>{
+            this.setValue(this.transform(value));
+        });
     }
 }
