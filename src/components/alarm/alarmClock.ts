@@ -6,6 +6,7 @@ import {blankTime, clockSettings} from "../../global.ts";
 import {TimeInput} from "../Input/timeInput.ts";
 import {SignalMap} from "../../SignalMap.ts";
 import {Toggle} from "../Input/toggle/toggle.ts";
+import {H24Toggle} from "../Input/h24toggle.ts";
 
 
 
@@ -45,12 +46,10 @@ export class AlarmClock extends Clock{
 
         const controls = document.createElement("div");
         controls.classList.add("controls");
-        this.h24Toggle = new Toggle(controls,"alarm-24", ()=>{
-            clockSettings.hr24 = !clockSettings.hr24;
-        }, "12H", "24H");
+        this.h24Toggle = new H24Toggle(controls, "alarm-24",()=>{clockSettings.hr24 = !clockSettings.hr24;});
         this.h24Toggle.update(clockSettings.hr24);
         this.h24Toggle.show();
-        controls.appendChild(this.h24Toggle.element);
+        //controls.appendChild(this.h24Toggle.element);
         this.setButton = document.createElement("button");
         this.setButton.innerText = "set";
         controls.appendChild(this.setButton);
