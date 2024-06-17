@@ -47,6 +47,7 @@ export class AlarmClock extends Clock{
         if(!clockSettings.hr24 && this.alarmTime.hours >= 12){
             this.pmToggle.update(true);
         }
+        this.pmToggle.disable();
 
         this.timeView = new LEDTime(timeContainer);
         this.timeView.update(num2StrTimeObj(this.alarmTime, clockSettings.hr24));
@@ -91,6 +92,7 @@ export class AlarmClock extends Clock{
         target.appendChild(this.element);
     }
     set(){
+        this.pmToggle.enable();
         this.input.setValue("");
         this.setting = true;
         this.input.show();
@@ -153,6 +155,7 @@ export class AlarmClock extends Clock{
         this.okButton.classList.add("fading");
         this.setButton.classList.remove("fading");
         this.enableAlarm();
+        this.pmToggle.disable();
     }
     showAlarmTime(){
         const displayTime = {...this.alarmTime};

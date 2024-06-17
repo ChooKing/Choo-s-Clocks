@@ -2,3 +2,6 @@
     cursor: pointer;
     display: flex;
 }
+.toggle input[type="checkbox"]:disabled ~ label{
+    pointer-events: none;
+}

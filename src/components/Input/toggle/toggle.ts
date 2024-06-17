@@ -46,4 +46,10 @@ export class Toggle extends Component<HTMLDivElement>{
     get value(){
         return !this._checkbox.checked? this.option1 : this.option2;
     }
+    disable(){
+        this._checkbox.disabled = true;
+    }
+    enable(){
+        this._checkbox.disabled = false;
+    }
 }
