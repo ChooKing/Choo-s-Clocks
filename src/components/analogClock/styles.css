@@ -70,7 +70,7 @@
     position: absolute;
     height: 50%;
     top: 0;
-    padding-top: 5%;
+    padding-top: 3vmin;
     left: 50%;
     translate: -50%;
     transform-origin: 50% 100%;
@@ -80,14 +80,15 @@
     position: absolute;
     width: 1vmin;
     height: 3vmin;
-    top: 0.25%;
+    top: 0.2vmin;
     left: 50%;
     transform: translate(-50%);
     background-color: #e8a64f;
 }
 .num{
-    font-size: 4rem;
+    font-size: 10vmin;
     color: orange;
+    
 }
 .num-group:nth-child(2){
     transform: rotate(30deg);
