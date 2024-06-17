@@ -48,10 +48,6 @@ export class AlarmClock extends Clock{
             this.pmToggle.update(true);
         }
 
-
-
-
-
         this.timeView = new LEDTime(timeContainer);
         this.timeView.update(num2StrTimeObj(this.alarmTime, clockSettings.hr24));
 
@@ -62,10 +58,6 @@ export class AlarmClock extends Clock{
                 this.okButton.disabled = !this.isValidTime();
             }
         });
-
-
-
-
         this.element.appendChild(timeContainer);
 
         const controls = document.createElement("div");
@@ -143,7 +135,7 @@ export class AlarmClock extends Clock{
         const hours = Number(timeStr.substring(0,2));
         return !(hours > 12 || hours < 1);
     }
-    getAlarmTime(){
+    getAlarmInputTime(){
         const timeStr = (this.input.value !== null)? this.input.value.padStart(6, "0"):"000000";
         const hours = hoursTo24(Number(timeStr.substring(0, 2)), this.h24Toggle.value == "24H",(this.pmToggle.value=="PM"));
         const minutes = Number(timeStr.substring(2, 4));
@@ -154,7 +146,7 @@ export class AlarmClock extends Clock{
         return time;
     }
     setAlarmTime(){
-        this.alarmTime = this.getAlarmTime();
+        this.alarmTime = this.getAlarmInputTime();
         this.showAlarmTime();
         this.setting = false;
         this.okButton.disabled = true;
