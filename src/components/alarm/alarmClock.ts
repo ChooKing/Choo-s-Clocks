@@ -1,6 +1,6 @@
 import "./styles.css";
 import {Clock} from "../../Clock.ts";
-import {calcHours, num2StrTimeObj, timeNumObj, timeStrObj} from "../../util.ts";
+import {num2StrTimeObj, timeNumObj, timeStrObj} from "../../util.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
 import {blankTime, clockSettings} from "../../global.ts";
 import {TimeInput} from "../Input/timeInput.ts";
@@ -10,7 +10,10 @@ import {H24Toggle} from "../Input/h24toggle.ts";
 import {DigitType} from "../LEDTime/LEDDigit/LEDDigit.ts";
 import {Ring} from "../../audio/ring.ts";
 
-
+function hoursTo24(hours: number, h24: boolean, pm: boolean){
+    if(h24) return hours;
+    return pm? hours + 12 : hours;
+}
 
 export class AlarmClock extends Clock{
     setButton! : HTMLButtonElement;
@@ -102,6 +105,7 @@ export class AlarmClock extends Clock{
         this.timeView?.update(blankTime);
         this.input.focus();
         this.okButton.classList.remove("fading");
+        this.setButton.classList.add("fading");
     }
     show(){
         super.show();
@@ -141,8 +145,7 @@ export class AlarmClock extends Clock{
     }
     getAlarmTime(){
         const timeStr = (this.input.value !== null)? this.input.value.padStart(6, "0"):"000000";
-        const hours = (calcHours(Number(timeStr.substring(0, 2)), this.h24Toggle.value == "24H"))
-            + ((this.pmToggle.value=="PM" && this.h24Toggle.value=="12H")? 12: 0);
+        const hours = hoursTo24(Number(timeStr.substring(0, 2)), this.h24Toggle.value == "24H",(this.pmToggle.value=="PM"));
         const minutes = Number(timeStr.substring(2, 4));
         const seconds = Number(timeStr.substring(4, 6));
         const time:timeNumObj = {
@@ -156,14 +159,16 @@ export class AlarmClock extends Clock{
         this.setting = false;
         this.okButton.disabled = true;
         this.okButton.classList.add("fading");
+        this.setButton.classList.remove("fading");
         this.enableAlarm();
     }
     showAlarmTime(){
         const displayTime = {...this.alarmTime};
-        if(this.h24Toggle.value=="12H"){
+        if(!clockSettings.hr24){
             displayTime.hours = !displayTime.hours? 12 : displayTime.hours % 12;
+            this.pmToggle.update(this.alarmTime.hours >= 12);
         }
-        this.timeView.update(num2StrTimeObj(displayTime));
+        this.timeView.update(num2StrTimeObj(displayTime, clockSettings.hr24));
     }
     enableAlarm(){
         this.timeSource.subscribe(this.name, (value)=>{this.update(value)});
