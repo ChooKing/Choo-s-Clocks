@@ -1,11 +1,11 @@
 import {DigitalClock} from "./components/digitalClock/digitalClock.ts";
 import {AnalogClock} from "./components/analogClock/analogClock.ts";
-import {SignalProvider} from "./SignalProvider.ts";
 import {CountdownTimer} from "./components/countdownTimer/countdownTimer.ts";
 import {date2NumTime, num2StrTimeObj, timeNumObj, timeStrObj} from "./util.ts";
 import {StopwatchClock} from "./components/stopwatch/stopwatchClock.ts";
 import {AlarmClock} from "./components/alarm/alarmClock.ts";
 import {SignalMap} from "./SignalMap.ts";
+import {DateTimeSignal} from "./dateTimeSignal.ts";
 
 export const clockNames = ["digital", "analog","countdown", "stopwatch", "alarm"] as const;
 export type timeSignalType = Date | timeStrObj | number;
@@ -20,7 +20,8 @@ export const clockSettings = {
 
 
 
-export const dateTimeSignal = new SignalProvider<Date>();
+//export const dateTimeSignal = new SignalProvider<Date>();
+export const dateTimeSignal = new DateTimeSignal();
 const dateNumSignal = new SignalMap<Date, number>("date-num", dateTimeSignal, (input: Date)=>{
     if(input) return input.getTime();
     return 0;

@@ -17,7 +17,7 @@ setInterval(()=>{
     const now = new Date();
     dateTimeSignal.setValue(now);
 }, 115);
-setCurrentClock("alarm");
+setCurrentClock("analog");
 
 const textRing = document.querySelector(".text-ring") as HTMLDivElement;
 textRing.addEventListener("click", (e)=>{

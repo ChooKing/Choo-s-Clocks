@@ -1,4 +1,4 @@
-export class SignalProvider<T> {
+export abstract class SignalProvider<T> {
     callbacks: {name:string, callback: (value:T)=>void}[];
     private _value: T|null;
     constructor() {
@@ -21,7 +21,5 @@ export class SignalProvider<T> {
     unsubscribe(name: string){
         this.callbacks = this.callbacks.filter(item => item.name !== name);
     }
-    get value(){
-        return this._value;
-    }
+    abstract get value(): T;
 }

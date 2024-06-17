@@ -12,4 +12,8 @@ export class SignalMap<I, O> extends SignalProvider<O> {
             this.setValue(this.transform(value));
         });
     }
+
+    get value(): O {
+        return this.transform(this.source.value);
+    }
 }
