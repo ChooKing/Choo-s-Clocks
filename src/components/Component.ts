@@ -9,14 +9,9 @@ export abstract class Component<T extends HTMLElement> {
     }
     abstract render(target: HTMLDivElement):void;
     hide(){
-        this.element.classList.add("fading");
-        setTimeout(()=>{
-            this.element.classList.add("hidden");
-        }, 500);
+        this.element.classList.add("hidden");
     }
     show(){
         this.element.classList.remove("hidden");
-        this.element.classList.remove("fading");
     }
-
 }
