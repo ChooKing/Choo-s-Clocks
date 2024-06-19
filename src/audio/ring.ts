@@ -2,6 +2,7 @@ export class Ring{
     ctx: AudioContext;
     osc: OscillatorNode;
     gainNode: GainNode;
+    started = false;
     constructor() {
         const ctx = new window.AudioContext();
         this.ctx = ctx;
@@ -12,9 +13,13 @@ export class Ring{
         this.gainNode.gain.value = 0.00;
         this.osc.connect(this.gainNode);
         this.gainNode.connect(ctx.destination);
-        this.osc.start();
+
     }
     play(){
+        if(!this.started){
+            this.osc.start();
+            this.started = true;
+        }
         const space = 40;
         const duration = 250;
         let count = 15;
@@ -23,7 +28,7 @@ export class Ring{
                 clearInterval(interval);
             }
             else{
-                this.gainNode.gain.value = 0.02;
+                this.gainNode.gain.value = 0.1;
                 setTimeout(()=>{
                     this.gainNode.gain.value = 0;
                 }, space);
