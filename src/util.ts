@@ -71,7 +71,7 @@ export function num2StrTimeObj(time: timeNumObj, h24: boolean = true): timeStrOb
     const minutes = String(time.minutes).padStart(2,"0");
     const seconds = String(time.seconds).padStart(2,"0");
     return {
-        hours: [hours[0] as DigitType, hours[1] as DigitType],
+        hours: [(!h24 && hours[0]==="0")?" ": hours[0] as DigitType, hours[1] as DigitType],
         minutes: [minutes[0] as DigitType,minutes[1] as DigitType],
         seconds: [seconds[0] as DigitType,seconds[1] as DigitType],
         pm:time.hours >= 12
