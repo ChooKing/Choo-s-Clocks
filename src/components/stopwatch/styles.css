@@ -15,12 +15,15 @@
     align-items: flex-end;
 }
 .stopwatch-clock .time-container .led-time{
-    flex: 1;
+    flex: 2;
 }
 .centiseconds{
-    flex: 0.2;
+    flex: 0.3;
     display: flex;
     gap: 0.5vmin;
+}
+.centiseconds .digit{
+    --gap-size: 0.4vmin;
 }
 .centiseconds .segment{
     --bevel-size: 0.6vmin;
