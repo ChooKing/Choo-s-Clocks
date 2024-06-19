@@ -86,8 +86,9 @@
     background-color: #e8a64f;
 }
 .num{
-    font-size: 10vmin;
+    font-size: 8vmin;
     color: orange;
+    text-shadow: #da7323 0.2vmin 0.2vmin 0.3vmin;
 
 }
 .num-group:nth-child(2){
@@ -132,12 +133,23 @@
 .num-group:nth-child(8) .num{
     transform: rotate(-210deg);
 }
+
+.num-container.roman .num-group:nth-child(8) .num{
+    transform: rotate(-210deg) translate(2vmin);
+}
+
+
 .num-group:nth-child(9){
     transform: rotate(240deg);
 }
 .num-group:nth-child(9) .num{
     transform: rotate(-240deg);
 }
+
+.num-container.roman .num-group:nth-child(9) .num{
+    transform: rotate(-240deg) translate(2.5vmin);
+}
+
 .num-group:nth-child(10){
     transform: rotate(270deg);
 }
