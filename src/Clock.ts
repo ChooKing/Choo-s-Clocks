@@ -4,8 +4,7 @@ export abstract class Clock extends Component<HTMLDivElement>{
     name: string;
 
     protected constructor(name: string, parent: HTMLDivElement) {
-        super(parent);
+        super(parent, "div", true);
         this.name = name;
-        this.element.classList.add("hidden");
     }
 }
