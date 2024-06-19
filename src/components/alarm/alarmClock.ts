@@ -32,6 +32,7 @@ export class AlarmClock extends Clock{
     inputs: Children<TimeInput> = {};
     timeViews: Children<LEDTime> = {}
     setting = false;
+    enabled = false;
     constructor(parent: HTMLDivElement, timeSource: SignalMap<Date, timeNumObj>) {
         super("alarm", parent);
         this.render(parent);
@@ -40,6 +41,37 @@ export class AlarmClock extends Clock{
     }
     render(target: HTMLDivElement): void {
         this.element.classList.add("alarm-clock");
+
+        const topControls = document.createElement("div");
+        topControls.classList.add("top-controls");
+        const h24Toggle = new H24Toggle(topControls, "alarm-24",()=>{
+            clockSettings.hr24 = !clockSettings.hr24;
+            pmToggle.element.classList.toggle("h24");
+            if(this.setting){
+                if(!this.isValidTime()){
+                    this.buttons.ok.hide();
+                }
+                else{
+                    this.buttons.ok.show();
+                }
+            }
+            else{
+                this.showAlarmTime();
+            }
+
+        });
+        h24Toggle.update(clockSettings.hr24);
+        this.toggles.h24 = h24Toggle;
+
+        this.toggles.off = new Toggle(topControls, "alarm-off", () => {
+            this.enabled = !this.enabled;
+            if(this.enabled) this.enableAlarm();
+            else this.disableAlarm();
+        }, "off", "on");
+        this.element.appendChild(topControls);
+
+
+
         const timeContainer = document.createElement("div");
         timeContainer.classList.add("time-container");
         const pmToggle = new Toggle(timeContainer, "alarm-pm", ()=>{this.inputs.timeInput.focus()}, "AM", "PM");
@@ -68,33 +100,16 @@ export class AlarmClock extends Clock{
         this.inputs.timeInput.hide();
         this.element.appendChild(timeContainer);
 
-        const controls = document.createElement("div");
-        controls.classList.add("controls");
-        const h24Toggle = new H24Toggle(controls, "alarm-24",()=>{
-            clockSettings.hr24 = !clockSettings.hr24;
-            pmToggle.element.classList.toggle("h24");
-            if(this.setting){
-                if(!this.isValidTime()){
-                    this.buttons.ok.hide();
-                }
-                else{
-                    this.buttons.ok.show();
-                }
-            }
-            else{
-                this.showAlarmTime();
-            }
+        const buttonControls = document.createElement("div");
+        buttonControls.classList.add("controls");
 
-        });
-        h24Toggle.update(clockSettings.hr24);
-        this.toggles.h24 = h24Toggle;
-        const setButton = new Button(controls,"set");
+        const setButton = new Button(buttonControls,"set");
         setButton.setHandler(()=>{this.set()});
         this.buttons.set = setButton;
-        const okButton = new Button(controls, "ok", true);
+        const okButton = new Button(buttonControls, "ok", true);
         okButton.setHandler(()=>{this.setAlarmTime()});
         this.buttons.ok = okButton;
-        this.element.appendChild(controls);
+        this.element.appendChild(buttonControls);
         target.appendChild(this.element);
     }
     set(){
@@ -175,6 +190,12 @@ export class AlarmClock extends Clock{
     }
     enableAlarm(){
         this.timeSource.subscribe(this.name, (value)=>{this.update(value)});
+        this.enabled = true;
+        this.toggles.off.update(true);
+    }
+    disableAlarm(){
+        this.timeSource.unsubscribe(this.name);
+        this.enabled = false;
     }
     update(value: timeNumObj): void {
         if(

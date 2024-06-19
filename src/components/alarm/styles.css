@@ -29,6 +29,38 @@
     background-color: transparent;
 }
 
+.alarm-clock .top-controls{
+    align-self: end;
+    display: flex;
+    flex-direction: row;
+    gap: 4vmin;
+    font-size: 3vmin;
+}
+.alarm-clock .top-controls .toggle{
+    display: flex;
+    flex-direction: row;
+}
+.alarm-clock .top-controls input[type="checkbox"]{
+    display: none;
+}
+.alarm-clock .top-controls input[type="checkbox"] ~ label:nth-of-type(1){
+    color: var(--led-color);
+}
+.alarm-clock .top-controls input[type="checkbox"] ~ label:nth-of-type(2){
+    color: var(--inactive-color);
+}
+.alarm-clock .top-controls input[type="checkbox"]:checked ~ label:nth-of-type(1){
+    color: var(--inactive-color);
+}
+.alarm-clock .top-controls input[type="checkbox"]:checked ~ label:nth-of-type(2){
+    color: var(--led-color);
+}
+
+
+
+
+
+
 .alarm-clock .pm-view{
     display: flex;
     flex-direction: column;
@@ -81,18 +113,3 @@
     padding: 1vmin;
 }
 
-.alarm-clock .controls input[type="checkbox"]{
-    display: none;
-}
-.alarm-clock .controls input[type="checkbox"] ~ label:nth-of-type(1){
-    color: var(--led-color);
-}
-.alarm-clock .controls input[type="checkbox"] ~ label:nth-of-type(2){
-    color: var(--inactive-color);
-}
-.alarm-clock .controls input[type="checkbox"]:checked ~ label:nth-of-type(1){
-    color: var(--inactive-color);
-}
-.alarm-clock .controls input[type="checkbox"]:checked ~ label:nth-of-type(2){
-    color: var(--led-color);
-}
