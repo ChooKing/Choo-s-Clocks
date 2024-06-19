@@ -107,8 +107,11 @@
     gap: 1rem;
 }
 .countdown-clock .time-container{
-    width: 100%;
+    width: 90%;
     position: relative;
+}
+.countdown-clock .time-container .segment{
+    --bevel-size: 0.8vmin;
 }
 .countdown-clock .time-container .time-input{
     position: absolute;
