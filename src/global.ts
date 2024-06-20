@@ -22,7 +22,7 @@ export const clockSettings = {
 
 //export const dateTimeSignal = new SignalProvider<Date>();
 export const dateTimeSignal = new DateTimeSignal();
-const dateNumSignal = new SignalMap<Date, number>("date-num", dateTimeSignal, (input: Date)=>{
+export const dateNumSignal = new SignalMap<Date, number>("date-num", dateTimeSignal, (input: Date)=>{
     if(input) return input.getTime();
     return 0;
 });
