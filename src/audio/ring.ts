@@ -1,8 +1,13 @@
+import {dateNumSignal} from "../global.ts";
+
 export class Ring{
     ctx: AudioContext;
     osc: OscillatorNode;
     gainNode: GainNode;
-    started = false;
+    oscStarted = false;
+    startTime = 0;
+    mode:"silent"|"firstTone"|"shortGap"|"secondTone"|"longGap" = "silent";
+    ringCount = 0;
     constructor() {
         const ctx = new window.AudioContext();
         this.ctx = ctx;
@@ -16,25 +21,53 @@ export class Ring{
 
     }
     play(){
-        if(!this.started){
+        if(!this.oscStarted){
             this.osc.start();
-            this.started = true;
+            this.oscStarted = true;
         }
-        const space = 40;
-        const duration = 250;
-        let count = 15;
-        const interval = setInterval(()=>{
-            if(count <0){
-                clearInterval(interval);
-            }
-            else{
-                this.gainNode.gain.value = 0.1;
-                setTimeout(()=>{
+        this.startTime = dateNumSignal.value;
+        dateNumSignal.subscribe("ring",(time)=>{this.update(time)});
+        this.mode = "firstTone";
+        this.ringCount = 0;
+        this.gainNode.gain.value = 0.4;
+    }
+    update(time: number){
+        const elapsed = time - this.startTime;
+        switch(this.mode){
+            case "firstTone":
+                if(elapsed > 100){
+                    this.mode = "shortGap";
+                    this.gainNode.gain.value = 0.00;
+                }
+            break;
+            case "shortGap":
+                if(elapsed > 150){
+                    this.mode = "secondTone";
+                    this.gainNode.gain.value = 0.4;
+                }
+                break;
+            case "secondTone":
+                if(elapsed > 400){
+                    this.mode = "longGap";
                     this.gainNode.gain.value = 0;
-                }, space);
+                }
+                break;
+            case "longGap":
+                if(elapsed > 600){
+                    this.ringCount++;
+                    if(this.ringCount >= 5){
+                        dateNumSignal.unsubscribe("ring");
+                        this.mode = "silent";
+                    }
+                    else{
+                        this.mode = "firstTone";
+                        this.gainNode.gain.value = 0.4;
 
-            }
-            count--;
-        }, space + duration);
+                    }
+
+                    this.startTime = dateNumSignal.value;
+                }
+                break;
+        }
     }
 }
