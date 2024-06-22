@@ -11,9 +11,12 @@
 .flex{
   display: flex;
 }
+html, body{
+  height: 100%;
+  width: 100%;
+}
 body{
-  min-height: 100vh;
-  min-height: 100svh;
+  position: fixed;
   display: grid;
   place-items: center;
   overflow: hidden;
