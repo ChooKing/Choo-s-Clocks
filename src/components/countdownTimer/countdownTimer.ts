@@ -135,6 +135,7 @@ export class CountdownTimer extends Clock{
             });
             state = "run";
             this.elapsed = 0;
+            this.input.element.value = "";
         }
         else if(state === "pause"){
             this.timeSource.unsubscribe(this.name);

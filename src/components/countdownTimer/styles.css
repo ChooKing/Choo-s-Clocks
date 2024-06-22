@@ -120,6 +120,6 @@
     display: flex;
 }
 .countdown-clock .controls button{
-    font-size: 1.5rem;
-    padding: 0.25rem 0.5rem;
+    font-size: 5vmin;
+    padding:0.6vmin 1.5vmin;
 }
