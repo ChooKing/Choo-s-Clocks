@@ -1,5 +1,3 @@
-import {dateNumSignal} from "../global.ts";
-
 export class Ring{
     ctx: AudioContext;
     osc: OscillatorNode;
@@ -25,13 +23,15 @@ export class Ring{
             this.osc.start();
             this.oscStarted = true;
         }
-        this.startTime = dateNumSignal.value;
-        dateNumSignal.subscribe("ring",(time)=>{this.update(time)});
         this.mode = "firstTone";
         this.ringCount = 0;
         this.gainNode.gain.value = 0.4;
+        this.startTime = Date.now();
+        const interval = setInterval(() => {
+            this.update(Date.now(), interval);
+        }, 50);
     }
-    update(time: number){
+    update(time: number, interval: number){
         const elapsed = time - this.startTime;
         switch(this.mode){
             case "firstTone":
@@ -56,7 +56,7 @@ export class Ring{
                 if(elapsed > 600){
                     this.ringCount++;
                     if(this.ringCount >= 5){
-                        dateNumSignal.unsubscribe("ring");
+                        clearInterval(interval);
                         this.mode = "silent";
                     }
                     else{
@@ -65,7 +65,7 @@ export class Ring{
 
                     }
 
-                    this.startTime = dateNumSignal.value;
+                    this.startTime = Date.now();
                 }
                 break;
         }
