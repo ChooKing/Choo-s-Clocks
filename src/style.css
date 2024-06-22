@@ -11,19 +11,23 @@
 .flex{
   display: flex;
 }
-html, body{
+
+body{
+  height: 100vh;
+  height: 100dvh;
+
+}
+.watch-container{
   height: 100%;
   width: 100%;
-}
-body{
-  position: fixed;
-  display: grid;
-  place-items: center;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   perspective: 250vmin;
 }
-#app{
+#watch{
   width: 100vmin;
   height: 100vmin;
   position: relative;
@@ -124,7 +128,7 @@ body{
   opacity: 0; /*Used separately from fading*/
 }
 @media screen and (orientation: portrait){
-  #app::before, #app::after{
+  #watch::before, #watch::after{
     content:"";
     position: absolute;
     width: 70%;
@@ -140,12 +144,12 @@ body{
     mask-position: 0 0, 0 100%;
     mask-repeat: no-repeat;
   }
-  #app::before{
+  #watch::before{
     top: -100vmin;
     transform-origin: bottom;
     transform: translateX(-50%) translateZ(-2px) rotateX(40deg);
   }
-  #app::after{
+  #watch::after{
     bottom: -100vmin;
     transform-origin: bottom;
     transform: translateX(-50%) translateY(-100%) translateZ(-2px) rotateX(-40deg) rotateZ(180deg);
