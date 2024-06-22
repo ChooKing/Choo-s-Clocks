@@ -11,19 +11,39 @@
 .flex{
   display: flex;
 }
+body{
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+
+  perspective: 250vmin;
+}
 #app{
   width: 100vmin;
   height: 100vmin;
   position: relative;
-  overflow: hidden;
+  transform-style: preserve-3d;
   margin: auto;
 }
-.clock-container{
 
-}
 .clock-container, .text-ring{
   display: grid;
   place-items: center;
+  border-radius: 50%;
+
+}
+.clock-container::before{
+  content:"";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  z-index: -1;
+  background-color: black;
 }
 .text-ring{
   --rotation: 0deg;
@@ -52,8 +72,6 @@
   background-blend-mode: overlay;
   background-size: 100%, 9px 11px;
   mask-image: radial-gradient(transparent 55%, white 55.2%, white 67.5%, transparent 67.8%);
-  /*mask-image: radial-gradient(white 67.5%, transparent 67.8%);*/
-  /*filter: blur(1px);*/
 }
 .text-ring::after{
   transform: rotate(calc(var(--rotation) * -1));
@@ -61,8 +79,6 @@
   z-index: -1;
   background-image: radial-gradient(transparent 55%, rgb(33, 126, 138) 55.2%, rgb(59, 83, 143) 67.5%, transparent 67.8%);
   clip-path: polygon(50% 50%, 75% 100%, 25% 100%);
-  /*backdrop-filter: hue-rotate(200deg) blur(2px);*/
-  /*mix-blend-mode: difference;*/
 
 }
 .curved-text{
@@ -73,32 +89,19 @@
   paint-order: stroke;
   stroke: #af8059;
   stroke-width: 0.3px;
-  /*stroke-linecap: butt;*/
-  /*stroke-linejoin: miter;*/
-  /*mix-blend-mode: luminosity;*/
-
 }
 .curved-text:hover{
-  fill: #6e9164;
+  fill: #1759a5;
 }
 @media screen and (min-width: 300px) and (min-height: 300px){
-  .text-ring::before{
-    /*mask-image: repeating-conic-gradient(white 5deg, rgba(255,255,255,0.65) 5.3deg, white 6.9deg);*/
-    /*mask-size: 7px 8px;*/
-  }
-  .text-ring::after{
-
-    /*backdrop-filter: hue-rotate(90deg) blur(3px);*/
-  }
   .curved-text{
-    fill: #ffbe68;
-    text-shadow: #270a07 3px 4px 4px;
+    fill: #102345;
+    text-shadow: #dfbc4a 1px 1px 1px;
   }
 }
 .clock-container{
   position: absolute;
   width: 78%;
-  border-radius: 50%;
   aspect-ratio: 1;
   left: 50%;
   top: 50%;
@@ -116,4 +119,33 @@
 }
 .invisible{
   opacity: 0; /*Used separately from fading*/
+}
+@media screen and (orientation: portrait){
+  #app::before, #app::after{
+    content:"";
+    position: absolute;
+    width: 70%;
+    height: 120vmin;
+    left: 50%;
+    clip-path: polygon(0 100%, 10% 70%, 15% 70%, 15% 0, 85% 0, 85% 70%, 90% 70%, 100% 100%);
+    background: repeating-linear-gradient(rgb(234, 165, 38), rgb(128, 91, 24)) 0 25%/100% 25%,
+    linear-gradient(90deg, transparent 25%, #655853 25.2% 26.8%, transparent 27% 73%, #655853 73.2% 74.8%, transparent 75%) 0 0/100% 69% no-repeat;
+    background-blend-mode: color;
+    mask-image: repeating-conic-gradient(hsla(0deg, 5%, 50%, 1) 2deg, hsla(0deg, 0%, 40%, 0.8) 2.2deg, hsla(0deg, 0%, 70%, 0.9) 2.4deg),
+    linear-gradient(white, white);
+    mask-size: 100% 80%, 100% 30%;
+    mask-position: 0 0, 0 100%;
+    mask-repeat: no-repeat;
+  }
+  #app::before{
+    top: -100vmin;
+    transform-origin: bottom;
+    transform: translateX(-50%) translateZ(-2px) rotateX(40deg);
+  }
+  #app::after{
+    bottom: -100vmin;
+    transform-origin: bottom;
+    transform: translateX(-50%) translateY(-100%) translateZ(-2px) rotateX(-40deg) rotateZ(180deg);
+    z-index: -1;
+  }
 }
