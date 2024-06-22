@@ -13,7 +13,9 @@ export class TimeInput extends Input<string>{
         this.element.classList.add("invisible");
         this.element.setAttribute("type","number");
         this.element.addEventListener("input",(e)=>{this.handleInput(e)});
-
+        this.element.addEventListener("keydown",(e)=>{
+           if(e.key === "Enter") (e.target as HTMLInputElement).blur();
+        });
 
         target.appendChild(this.element);
     }
@@ -24,7 +26,7 @@ export class TimeInput extends Input<string>{
         const key = (e as InputEvent).data;
         if(!key){
             if(this._value.length > 0){
-                this._value = this._value.substring(0,this._value.length-1);
+                if(/\d/.test(key!)) this._value = this._value.substring(0,this._value.length-1);
             }
         }
         else if(this._value.length < 6){
