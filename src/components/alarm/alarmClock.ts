@@ -206,6 +206,11 @@ export class AlarmClock extends Clock{
             console.log("alarm time reached");
             this.ring.play();
             this.timeSource.unsubscribe(this.name);
+            setTimeout(()=>{
+                if(this.toggles.off.value==="on"){
+                    this.enableAlarm();
+                }
+            },1005);
         }
     }
     redraw(value: timeStrObj): void {
