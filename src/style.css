@@ -34,7 +34,9 @@ body{
   transform-style: preserve-3d;
   margin: auto;
 }
-
+.clock-container{
+  font-family: sans-serif;
+}
 .clock-container, .text-ring{
   display: grid;
   place-items: center;
@@ -51,6 +53,17 @@ body{
   border-radius: 50%;
   z-index: -1;
   background-color: black;
+}
+.clock-container.ringing::before{
+  animation: flash 400ms linear infinite;
+}
+@keyframes flash {
+  from{
+    background-color: rgb(0,0,0);
+  }
+  to{
+    background-color: rgb(55,55,55);
+  }
 }
 .text-ring{
   --rotation: 0deg;
