@@ -10,6 +10,14 @@ export function date2Time(time: Date, hr24 = false) {
         seconds:String(seconds).padStart(2,"0")
     };
 }
+export const dayNames = ["SUN","MON","TUE","WED","THU","FRI","SAT"] as const;
+export type dayNameType = typeof dayNames[number];
+export type dateStrObj = {
+    month: DigitType[];
+    day: DigitType[];
+    year: DigitType[];
+    dayName: number;
+}
 export type timeStrObj ={
     hours: DigitType[];
     minutes: DigitType[];
@@ -21,6 +29,25 @@ export type timeNumObj = {
     minutes: number;
     seconds: number;
     millis: number;
+}
+export function date2DateStrObj(date: Date):dateStrObj{
+    if(date){
+        const month = String(date.getMonth() + 1).padStart(2,"0");
+        const day = String(date.getDate()).padStart(2,"0");
+        const year = String(date.getFullYear());
+        const dayName = date.getDay();
+        return{
+            month:[month[0] as DigitType, month[1] as DigitType],
+            day:[day[0] as DigitType, day[1] as DigitType],
+            year:[year[0] as DigitType, year[1] as DigitType, year[2] as DigitType, year[3] as DigitType],
+            dayName}
+    }
+    return{
+        month: ["0", "0"],
+        day: ["0", "0"],
+        year: ["0", "0","0","0"],
+        dayName: 0
+    }
 }
 export function date2NumTime(date: Date):timeNumObj{
     if(date) return {
