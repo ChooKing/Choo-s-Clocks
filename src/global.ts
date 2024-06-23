@@ -6,6 +6,7 @@ import {StopwatchClock} from "./components/stopwatch/stopwatchClock.ts";
 import {AlarmClock} from "./components/alarm/alarmClock.ts";
 import {SignalMap} from "./SignalMap.ts";
 import {DateTimeSignal} from "./dateTimeSignal.ts";
+import {Ring} from "./audio/ring.ts";
 
 export const clockNames = ["digital", "analog","countdown", "stopwatch", "alarm"] as const;
 export type timeSignalType = Date | timeStrObj | number;
@@ -44,4 +45,6 @@ export const clocks = {
     alarm: new AlarmClock(clockContainer, timeNumSignal)
 }
 export type clockNameType = keyof typeof clocks;
+
+export const ring = new Ring();
 

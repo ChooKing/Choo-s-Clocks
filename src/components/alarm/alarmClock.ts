@@ -2,13 +2,12 @@ import "./styles.css";
 import {Clock} from "../../Clock.ts";
 import {num2StrTimeObj, timeNumObj, timeStrObj} from "../../util.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
-import {blankTime, clockSettings} from "../../global.ts";
+import {blankTime, clockSettings, ring} from "../../global.ts";
 import {TimeInput} from "../Input/timeInput.ts";
 import {SignalMap} from "../../SignalMap.ts";
 import {Toggle} from "../Input/toggle/toggle.ts";
 import {H24Toggle} from "../Input/h24toggle.ts";
 import {DigitType} from "../LEDTime/LEDDigit/LEDDigit.ts";
-import {Ring} from "../../audio/ring.ts";
 import {Children} from "../Component.ts";
 import {Button} from "../button/button.ts";
 
@@ -26,7 +25,6 @@ export class AlarmClock extends Clock{
         seconds: 0,
         millis: 0
     } as timeNumObj;
-    ring: Ring;
     toggles: Children<Toggle> = {};
     buttons: Children<Button> = {};
     inputs: Children<TimeInput> = {};
@@ -37,7 +35,6 @@ export class AlarmClock extends Clock{
         super("alarm", parent);
         this.render(parent);
         this.timeSource = timeSource;
-        this.ring = new Ring();
     }
     render(target: HTMLDivElement): void {
         this.element.classList.add("alarm-clock");
@@ -179,6 +176,7 @@ export class AlarmClock extends Clock{
         this.buttons.set.show();
         this.enableAlarm();
         this.toggles.pm.disable();
+        this.inputs.timeInput.hide();
     }
     showAlarmTime(){
         const displayTime = {...this.alarmTime};
@@ -203,14 +201,17 @@ export class AlarmClock extends Clock{
             (value.minutes === this.alarmTime.minutes) &&
             (value.seconds === this.alarmTime.seconds)
         ){
-            console.log("alarm time reached");
-            this.ring.play();
             this.timeSource.unsubscribe(this.name);
+            this.parent.classList.add("ringing");
+            setTimeout(()=>{
+                this.parent.classList.remove("ringing");
+            }, 2000);
             setTimeout(()=>{
                 if(this.toggles.off.value==="on"){
                     this.enableAlarm();
                 }
             },1005);
+            ring.play();
         }
     }
     redraw(value: timeStrObj): void {
