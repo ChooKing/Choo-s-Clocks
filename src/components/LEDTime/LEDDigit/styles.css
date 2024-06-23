@@ -44,3 +44,14 @@
 .lit{
     background-color: var(--led-color);
 }
+.hyphen{
+    width: 100%;
+    aspect-ratio: 0.5;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+}
+.hyphen .segment{
+    height: 8.333%;
+}

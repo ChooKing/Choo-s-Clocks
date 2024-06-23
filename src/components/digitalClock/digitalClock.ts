@@ -7,11 +7,13 @@ import {PMView} from "../ampm/pmView.ts";
 import {SignalMap} from "../../SignalMap.ts";
 import {clockSettings} from "../../global.ts";
 import {H24Toggle} from "../Input/h24toggle.ts";
+import {DateView} from "./dateView/dateView.ts";
 
 export class DigitalClock extends Clock{
     timeView!: LEDTime;
     pmToggle!: Toggle;
     pmView!: PMView;
+    dateView!: DateView;
     formattedTime: SignalMap<timeNumObj, timeStrObj>;
     constructor(parent: HTMLDivElement, timeSource: SignalMap<timeNumObj, timeStrObj>) {
         super("digital", parent);
@@ -20,6 +22,7 @@ export class DigitalClock extends Clock{
     }
     render(target: HTMLDivElement){
         this.element.classList.add("digital-clock");
+        this.dateView = new DateView(this.element);
         const timeContainer = document.createElement("div");
         timeContainer.classList.add("time-container");
         this.pmView = new PMView(timeContainer);
