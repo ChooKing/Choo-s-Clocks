@@ -76,6 +76,7 @@ export class CountdownTimer extends Clock{
         this.timeView.update(nullTime);
         this.timeView.show();
         this.input = new TimeInput(timeContainer,(value: string)=>{this.showSetTime(str2Time(value))});
+        this.input.hide();
 
 
 
@@ -135,6 +136,7 @@ export class CountdownTimer extends Clock{
             });
             state = "run";
             this.elapsed = 0;
+            this.input.hide();
             this.input.element.value = "";
         }
         else if(state === "pause"){
