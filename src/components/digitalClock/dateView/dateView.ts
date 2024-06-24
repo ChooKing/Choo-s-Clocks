@@ -16,7 +16,7 @@ export class DateView extends ReactiveComponent<dateStrObj, HTMLDivElement>{
         this.render(parent);
         this.element.classList.add("date-view");
         this.lastDate = {...dateStrSignal.value};
-        dateStrSignal.subscribe("date-view",(value)=>{this.update(value)});
+        dateStrSignal.subscribe((value)=>{this.update(value)});
     }
     render(target: HTMLDivElement): void {
         const dateContainer = document.createElement("div");

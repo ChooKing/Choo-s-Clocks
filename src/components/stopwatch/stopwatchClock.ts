@@ -16,6 +16,7 @@ export class StopwatchClock extends Clock{
     stopButton?: HTMLButtonElement;
     clearButton?: HTMLButtonElement;
     timeSource: SignalMap<Date, number>;
+    timeSourceSymbol?: symbol;
     constructor(parent: HTMLDivElement, timeSource: SignalMap<Date, number>) {
         super("stopwatch",parent);
         this.timeSource = timeSource;
@@ -74,7 +75,7 @@ export class StopwatchClock extends Clock{
     start(){
         this.isRunning = true;
         this.lastUpdate = this.timeSource.value!;
-        this.timeSource.subscribe("stopwatch", (time)=>{
+        this.timeSourceSymbol = this.timeSource.subscribe((time)=>{
             this.update(time);
         });
         this.startButton?.classList.add("hidden");
@@ -84,7 +85,7 @@ export class StopwatchClock extends Clock{
     }
     stop(){
         this.isRunning = false;
-        this.timeSource.unsubscribe("stopwatch");
+        if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
         this.update(this.timeSource.value!);// Enhance accuracy over 151ms polling
         this.startButton?.classList.remove("hidden");
         this.stopButton?.classList.add("hidden");

@@ -21,6 +21,7 @@ export class AnalogClock extends Clock{
     minuteRef?: HTMLDivElement;
     secondRef?: HTMLDivElement;
     dateSource: SignalMap<Date, timeNumObj>;
+    dateSourceSymbol?:symbol;
     constructor(parent: HTMLDivElement, timeSource: SignalMap<Date, timeNumObj>) {
         super("analog", parent);
         this.render(parent);
@@ -33,7 +34,7 @@ export class AnalogClock extends Clock{
     }
     show() {
         super.show();
-        this.dateSource.subscribe(this.name, (time)=>{
+        this.dateSourceSymbol = this.dateSource.subscribe((time)=>{
             this.update(time);
         });
     }

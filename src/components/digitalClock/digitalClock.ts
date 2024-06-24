@@ -15,6 +15,7 @@ export class DigitalClock extends Clock{
     pmView!: PMView;
     dateView!: DateView;
     formattedTime: SignalMap<timeNumObj, timeStrObj>;
+    formattedTimeSymbol?: symbol;
     constructor(parent: HTMLDivElement, timeSource: SignalMap<timeNumObj, timeStrObj>) {
         super("digital", parent);
         this.render(parent);
@@ -59,7 +60,7 @@ export class DigitalClock extends Clock{
     show(){
         super.show();
         this.element.classList.add("flex");
-        this.formattedTime.subscribe(this.name, (time)=>{
+        this.formattedTimeSymbol = this.formattedTime.subscribe((time)=>{
             this.update(time);
         });
         this.pmToggle.update(clockSettings.hr24);
@@ -67,6 +68,6 @@ export class DigitalClock extends Clock{
     hide(){
         super.hide();
         this.element.classList.remove("flex");
-        this.formattedTime.unsubscribe(this.name);
+        if(this.formattedTimeSymbol) this.formattedTime.unsubscribe(this.formattedTimeSymbol);
     }
 }

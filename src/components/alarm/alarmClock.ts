@@ -19,6 +19,7 @@ function hoursTo24(hours: number, h24: boolean, pm: boolean){
 
 export class AlarmClock extends Clock{
     timeSource: SignalMap<Date, timeNumObj>;
+    timeSourceSymbol?: symbol;
     alarmTime = {
         hours: 0,
         minutes: 0,
@@ -187,12 +188,12 @@ export class AlarmClock extends Clock{
         this.redraw(num2StrTimeObj(displayTime, clockSettings.hr24));
     }
     enableAlarm(){
-        this.timeSource.subscribe(this.name, (value)=>{this.update(value)});
+        this.timeSourceSymbol = this.timeSource.subscribe((value)=>{this.update(value)});
         this.enabled = true;
         this.toggles.off.update(true);
     }
     disableAlarm(){
-        this.timeSource.unsubscribe(this.name);
+        if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
         this.enabled = false;
     }
     update(value: timeNumObj): void {
@@ -201,7 +202,7 @@ export class AlarmClock extends Clock{
             (value.minutes === this.alarmTime.minutes) &&
             (value.seconds === this.alarmTime.seconds)
         ){
-            this.timeSource.unsubscribe(this.name);
+            if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
             this.parent.classList.add("ringing");
             setTimeout(()=>{
                 this.parent.classList.remove("ringing");

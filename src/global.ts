@@ -23,17 +23,17 @@ export const clockSettings = {
 
 //export const dateTimeSignal = new SignalProvider<Date>();
 export const dateTimeSignal = new DateTimeSignal();
-const dateNumSignal = new SignalMap<Date, number>("date-num", dateTimeSignal, (input: Date)=>{
+const dateNumSignal = new SignalMap<Date, number>(dateTimeSignal, (input: Date)=>{
     if(input) return input.getTime();
     return 0;
 });
-export const dateStrSignal = new SignalMap<Date, dateStrObj>("date-str", dateTimeSignal, (input)=>{
+export const dateStrSignal = new SignalMap<Date, dateStrObj>(dateTimeSignal, (input)=>{
     return date2DateStrObj(input);
 });
-const timeNumSignal = new SignalMap<Date, timeNumObj>("raw-time",dateTimeSignal,(input: Date)=>{
+const timeNumSignal = new SignalMap<Date, timeNumObj>(dateTimeSignal,(input: Date)=>{
     return date2NumTime(input);
 });
-const formattedTimeSignal =  new SignalMap<timeNumObj, timeStrObj>("timeObj24", timeNumSignal,(input: timeNumObj)=>{
+const formattedTimeSignal =  new SignalMap<timeNumObj, timeStrObj>(timeNumSignal,(input: timeNumObj)=>{
     return num2StrTimeObj(input, clockSettings.hr24);
 });
 const clockContainer = document.querySelector('.clock-container') as HTMLDivElement;

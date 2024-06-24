@@ -21,6 +21,7 @@ export class CountdownTimer extends Clock{
     timeView!: LEDTime;
     input!: TimeInput;
     timeSource: SignalMap<Date, number>;
+    timeSourceSymbol?: symbol;
     constructor(parent: HTMLDivElement, timeSource: SignalMap<Date, number>) {
         super("countdown", parent);
         this.timeSource = timeSource;
@@ -128,7 +129,7 @@ export class CountdownTimer extends Clock{
         if(state === "start"){
             this.duration = this.input.time *1000;
             this.lastUpdate = this.timeSource.value ?? Date.now();
-            this.timeSource.subscribe(this.name,(time)=>{
+            this.timeSourceSymbol = this.timeSource.subscribe((time)=>{
                 this.update(time);
             });
             state = "run";
@@ -137,17 +138,17 @@ export class CountdownTimer extends Clock{
             this.input.element.value = "";
         }
         else if(state === "pause"){
-            this.timeSource.unsubscribe(this.name);
+            if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
         }
         else if(state === "stop"){
-            this.timeSource.unsubscribe(this.name);
+            if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
             this.duration = 0;
             this.element.style.setProperty("--percent-remaining", "0%");
             this.timeView.update(nullTime);
         }
         else if(state === "resume"){
             this.lastUpdate = this.timeSource.value ?? Date.now();
-            this.timeSource.subscribe(this.name,(time)=>{
+            this.timeSourceSymbol = this.timeSource.subscribe((time)=>{
                 this.update(time);
             });
             state = "run";
@@ -179,7 +180,7 @@ export class CountdownTimer extends Clock{
             const remainingObj = sec2StrTime(Math.round(timeRemaining / 1000));
             this.timeView.update(remainingObj);
             if(this.elapsed >= this.duration){
-                this.timeSource.unsubscribe(this.name);
+                if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
                 this.parent.classList.add("ringing");
                 setTimeout(()=>{
                     this.parent.classList.remove("ringing");
