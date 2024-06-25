@@ -1,8 +1,9 @@
 import "./styles.css";
+import {LocalNotifications} from "@capacitor/local-notifications";
 import {Clock} from "../../Clock.ts";
 import {num2StrTimeObj, timeNumObj, timeStrObj} from "../../util.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
-import {beep, blankTime, clockSettings} from "../../global.ts";
+import {blankTime, clockSettings} from "../../global.ts";
 import {TimeInput} from "../Input/timeInput.ts";
 import {SignalMap} from "../../SignalMap.ts";
 import {Toggle} from "../Input/toggle/toggle.ts";
@@ -188,7 +189,23 @@ export class AlarmClock extends Clock{
         this.redraw(num2StrTimeObj(displayTime, clockSettings.hr24));
     }
     enableAlarm(){
-        this.timeSourceSymbol = this.timeSource.subscribe((value)=>{this.update(value)});
+        //this.timeSourceSymbol = this.timeSource.subscribe((value)=>{this.update(value)});
+        const alarmDate = new Date();
+        alarmDate.setHours(this.alarmTime.hours);
+        alarmDate.setMinutes(this.alarmTime.minutes);
+        alarmDate.setSeconds(this.alarmTime.seconds);
+
+        LocalNotifications.schedule({
+            notifications: [
+                {
+                    title: "Alarm",
+                    schedule: {at: alarmDate, allowWhileIdle: true, repeats: true, every: "day"},
+                    body: "Alarm time reached",
+                    id: 1,
+                    sound: "ring.mp3"
+                }
+            ]
+        });
         this.enabled = true;
         this.toggles.off.update(true);
     }
@@ -196,6 +213,7 @@ export class AlarmClock extends Clock{
         if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
         this.enabled = false;
     }
+    /*
     update(value: timeNumObj): void {
         if(
             (value.hours === this.alarmTime.hours) &&
@@ -218,6 +236,8 @@ export class AlarmClock extends Clock{
             }, 300);
         }
     }
+
+     */
     redraw(value: timeStrObj): void {
         this.timeViews.time.update(value);
     }
