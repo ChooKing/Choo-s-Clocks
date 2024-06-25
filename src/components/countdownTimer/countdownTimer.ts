@@ -3,10 +3,11 @@ import {Clock} from "../../Clock.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
 import {sec2StrTime, str2Time, timeStrObj} from "../../util.ts";
 import {TimeInput} from "../Input/timeInput.ts";
-import {beep, blankTime, nullTime} from "../../global.ts";
+import {blankTime, nullTime} from "../../global.ts";
 import {SignalMap} from "../../SignalMap.ts";
 import {Children} from "../Component.ts";
 import {Button} from "../button/button.ts";
+import {LocalNotifications, LocalNotificationSchema} from "@capacitor/local-notifications";
 const buttonStates = {
     //set, start, pause, resume, stop
     set:[false, true, false,false,false],
@@ -26,6 +27,7 @@ export class CountdownTimer extends Clock{
     timeSource: SignalMap<Date, number>;
     timeSourceSymbol?: symbol;
     timeOffset = 0;
+    notification?: LocalNotificationSchema;
     constructor(parent: HTMLDivElement, timeSource: SignalMap<Date, number>) {
         super("countdown", parent);
         this.timeSource = timeSource;
@@ -131,6 +133,7 @@ export class CountdownTimer extends Clock{
             state = "run";
             this.input.hide();
             this.input.element.value = "";
+            this.setAlarm();
         }
         else if(state === "pause"){
             this.timeOffset = this.duration - this.remaining;
@@ -142,6 +145,7 @@ export class CountdownTimer extends Clock{
             this.element.style.setProperty("--percent-remaining", "0%");
             this.timeView.update(nullTime);
             this.timeOffset = 0;
+            if(this.notification) LocalNotifications.cancel({notifications: [this.notification]});
         }
         else if(state === "resume"){
             this.startTime = this.timeSource.value;
@@ -164,6 +168,21 @@ export class CountdownTimer extends Clock{
         })
         this.timerState = state;
     }
+    setAlarm(){
+        const alarmDate = new Date();
+        alarmDate.setSeconds(alarmDate.getSeconds() + (this.remaining)/1000);
+        this.notification = {
+            title: "Countdown Timer",
+            schedule: {at: alarmDate, repeats: false},
+            body: "Time ended",
+            id: 2,
+            sound: "./assets/public/ring.mp3"
+        };
+        LocalNotifications.schedule({
+            notifications: [this.notification]
+        });
+
+    }
     showSetTime(value: timeStrObj){
         this.timeView.update(value);
     }
@@ -181,11 +200,15 @@ export class CountdownTimer extends Clock{
                     this.parent.classList.remove("ringing");
                 }, 2000);
                 this.setState("stop");
+                /*
                 beep.play(200);
                 setTimeout(()=>{
                     beep.play(500);
                 }, 300);
                 console.log("finished");
+
+                 */
+
             }
         }
     }

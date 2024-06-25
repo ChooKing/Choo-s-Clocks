@@ -1,5 +1,5 @@
 import "./styles.css";
-import {LocalNotifications} from "@capacitor/local-notifications";
+import {LocalNotifications, LocalNotificationSchema} from "@capacitor/local-notifications";
 import {Clock} from "../../Clock.ts";
 import {num2StrTimeObj, timeNumObj, timeStrObj} from "../../util.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
@@ -33,6 +33,7 @@ export class AlarmClock extends Clock{
     timeViews: Children<LEDTime> = {}
     setting = false;
     enabled = false;
+    notification?: LocalNotificationSchema;
     constructor(parent: HTMLDivElement, timeSource: SignalMap<Date, timeNumObj>) {
         super("alarm", parent);
         this.render(parent);
@@ -194,24 +195,23 @@ export class AlarmClock extends Clock{
         alarmDate.setHours(this.alarmTime.hours);
         alarmDate.setMinutes(this.alarmTime.minutes);
         alarmDate.setSeconds(this.alarmTime.seconds);
-
+        this.notification = {
+            title: "Alarm",
+            schedule: {at: alarmDate, allowWhileIdle: true, repeats: true, every: "day"},
+            body: "Alarm time reached",
+            id: 1,
+            sound: "./assets/public/ring.mp3"
+        };
         LocalNotifications.schedule({
-            notifications: [
-                {
-                    title: "Alarm",
-                    schedule: {at: alarmDate, allowWhileIdle: true, repeats: true, every: "day"},
-                    body: "Alarm time reached",
-                    id: 1,
-                    sound: "ring.mp3"
-                }
-            ]
+            notifications: [this.notification]
         });
         this.enabled = true;
         this.toggles.off.update(true);
     }
     disableAlarm(){
-        if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
+        //if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
         this.enabled = false;
+        if(this.notification) LocalNotifications.cancel({notifications: [this.notification]});
     }
     /*
     update(value: timeNumObj): void {
