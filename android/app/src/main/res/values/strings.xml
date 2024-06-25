@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">choo-clocks</string>
+    <string name="title_activity_main">choo-clocks</string>
+    <string name="package_name">king.choo.app</string>
+    <string name="custom_url_scheme">king.choo.app</string>
+</resources>
