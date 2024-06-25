@@ -1,5 +1,5 @@
 import "./style.css";
-import {clockNameType, clockNames, clocks, dateTimeSignal} from "./global.ts";
+import {clockNameType, clockNames, clocks, dateTimeSignal, beep} from "./global.ts";
 
 let currentClock: clockNameType = "digital";
 
@@ -12,20 +12,19 @@ export function setCurrentClock(name: clockNameType){
         clocks[name].show();
     },750);
 }
-
+setCurrentClock("digital");
 setInterval(()=>{
     const now = new Date();
     dateTimeSignal.setValue(now);
 }, 115);
-setCurrentClock("digital");
 
 const textRing = document.querySelector(".text-ring") as HTMLDivElement;
 textRing.addEventListener("click", (e)=>{
+    beep.play(10);//This is primarily a workaround for Safari's time limit on last interaction before audio plays.
     const target = e.target as HTMLDivElement;
     if(target.tagName === "textPath"){
         setCurrentClock(target.textContent!.toLowerCase() as clockNameType);
     }
-
 });
 
 

@@ -3,7 +3,7 @@ import {Clock} from "../../Clock.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
 import {sec2StrTime, str2Time, timeStrObj} from "../../util.ts";
 import {TimeInput} from "../Input/timeInput.ts";
-import {blankTime, nullTime, ring} from "../../global.ts";
+import {beep, blankTime, nullTime} from "../../global.ts";
 import {SignalMap} from "../../SignalMap.ts";
 const buttonStates = {
     //set, start, pause, resume, stop
@@ -186,7 +186,10 @@ export class CountdownTimer extends Clock{
                     this.parent.classList.remove("ringing");
                 }, 2000);
                 this.setState("stop");
-                ring.play();
+                beep.play(200);
+                setTimeout(()=>{
+                    beep.play(500);
+                }, 300);
                 console.log("finished");
             }
         }

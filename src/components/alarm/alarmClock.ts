@@ -2,7 +2,7 @@ import "./styles.css";
 import {Clock} from "../../Clock.ts";
 import {num2StrTimeObj, timeNumObj, timeStrObj} from "../../util.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
-import {blankTime, clockSettings, ring} from "../../global.ts";
+import {beep, blankTime, clockSettings} from "../../global.ts";
 import {TimeInput} from "../Input/timeInput.ts";
 import {SignalMap} from "../../SignalMap.ts";
 import {Toggle} from "../Input/toggle/toggle.ts";
@@ -212,7 +212,10 @@ export class AlarmClock extends Clock{
                     this.enableAlarm();
                 }
             },1005);
-            ring.play();
+            beep.play(200);
+            setTimeout(()=>{
+                beep.play(500);
+            }, 300);
         }
     }
     redraw(value: timeStrObj): void {

@@ -6,10 +6,9 @@ import {StopwatchClock} from "./components/stopwatch/stopwatchClock.ts";
 import {AlarmClock} from "./components/alarm/alarmClock.ts";
 import {SignalMap} from "./SignalMap.ts";
 import {DateTimeSignal} from "./dateTimeSignal.ts";
-import {Ring} from "./audio/ring.ts";
+import {Beep} from "./audio/beep.ts";
 
 export const clockNames = ["digital", "analog","countdown", "stopwatch", "alarm"] as const;
-export type timeSignalType = Date | timeStrObj | number;
 export const nullTime = {hours: ["0","0"], minutes:["0","0"], seconds:["0","0"]} as timeStrObj;
 export const blankTime = {hours: [" "," "], minutes:[" "," "], seconds:[" "," "]} as timeStrObj;
 
@@ -18,10 +17,6 @@ export const clockSettings = {
     hr24: false
 }
 
-
-
-
-//export const dateTimeSignal = new SignalProvider<Date>();
 export const dateTimeSignal = new DateTimeSignal();
 const dateNumSignal = new SignalMap<Date, number>(dateTimeSignal, (input: Date)=>{
     if(input) return input.getTime();
@@ -45,6 +40,5 @@ export const clocks = {
     alarm: new AlarmClock(clockContainer, timeNumSignal)
 }
 export type clockNameType = keyof typeof clocks;
-
-export const ring = new Ring();
+export const beep = new Beep();
 
