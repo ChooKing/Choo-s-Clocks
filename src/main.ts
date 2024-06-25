@@ -1,4 +1,5 @@
 import "./style.css";
+import {App} from "@capacitor/app";
 import {clockNameType, clockNames, clocks, dateTimeSignal, beep} from "./global.ts";
 
 let currentClock: clockNameType = "digital";
@@ -28,3 +29,6 @@ textRing.addEventListener("click", (e)=>{
 });
 
 
+App.addListener("resume",()=>{
+
+});
