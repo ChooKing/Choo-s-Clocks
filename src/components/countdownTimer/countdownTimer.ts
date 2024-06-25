@@ -5,6 +5,8 @@ import {sec2StrTime, str2Time, timeStrObj} from "../../util.ts";
 import {TimeInput} from "../Input/timeInput.ts";
 import {beep, blankTime, nullTime} from "../../global.ts";
 import {SignalMap} from "../../SignalMap.ts";
+import {Children} from "../Component.ts";
+import {Button} from "../button/button.ts";
 const buttonStates = {
     //set, start, pause, resume, stop
     set:[false, true, false,false,false],
@@ -20,6 +22,7 @@ export class CountdownTimer extends Clock{
     timerState: timerStates;
     timeView!: LEDTime;
     input!: TimeInput;
+    buttons: Children<Button> = {};
     timeSource: SignalMap<Date, number>;
     timeSourceSymbol?: symbol;
     constructor(parent: HTMLDivElement, timeSource: SignalMap<Date, number>) {
@@ -73,60 +76,53 @@ export class CountdownTimer extends Clock{
         this.timeView = new LEDTime(timeContainer);
         this.timeView.update(nullTime);
         this.timeView.show();
-        this.input = new TimeInput(timeContainer,(value: string)=>{this.showSetTime(str2Time(value))});
+        this.input = new TimeInput(timeContainer,(value: string)=>{
+            this.showSetTime(str2Time(value));
+            if(Number(value) > 0){
+                this.buttons.start.enable();
+            }
+            else this.buttons.start.disable();
+        });
         this.input.hide();
-
-
-
-
         controls.appendChild(timeContainer);
 
         //BUTTONS
         const buttons = document.createElement("div");
         buttons.classList.add("buttons");
-        const setButton = document.createElement("button");
-        setButton.textContent = "set";
-        setButton.addEventListener("click",()=>{
+        this.buttons.set = new Button(buttons, "set");
+        this.buttons.set.setHandler(()=>{
+            this.setState("set");
+        });
+        this.buttons.start = new Button(buttons, "start", true);
+        this.buttons.start.setHandler(()=>{
+            this.setState("start");
+        });
+        this.buttons.pause = new Button(buttons, "pause", true);
+        this.buttons.pause.setHandler(()=>{
+            this.setState("pause");
+        });
+        this.buttons.resume = new Button(buttons, "resume", true);
+        this.buttons.resume.setHandler(()=>{
+            this.setState("resume");
+        });
+        this.buttons.stop = new Button(buttons, "stop", true);
+        this.buttons.stop.setHandler(()=>{
+            this.setState("stop");
+        });
+        this.element.appendChild(buttons);
+        controls.appendChild(buttons);
+        this.element.appendChild(controls);
+        target.appendChild(this.element);
+    }
+    setState(state: timerStates){
+        if(state==="set"){
             this.input.reset();
             this.timeView.update(blankTime);
             this.input.show();
             this.input.element.focus();
-            this.setState("set");
-
-        });
-        buttons.appendChild(setButton);
-        const startButton = document.createElement("button");
-        startButton.textContent = "start";
-        startButton.addEventListener("click",()=>{
-            this.setState("start");
-        });
-        buttons.appendChild(startButton);
-        const pauseButton = document.createElement("button");
-        pauseButton.textContent = "pause";
-        pauseButton.addEventListener("click",()=>{
-            this.setState("pause");
-        });
-        buttons.appendChild(pauseButton);
-        const resumeButton = document.createElement("button");
-        resumeButton.textContent = "resume";
-        resumeButton.addEventListener("click",()=>{
-           this.setState("resume");
-        });
-        buttons.appendChild(resumeButton);
-        this.element.appendChild(buttons);
-        const stopButton = document.createElement("button");
-        stopButton.textContent = "stop";
-        stopButton.addEventListener("click",()=>{
-            this.setState("stop");
-        });
-        buttons.appendChild(stopButton);
-        controls.appendChild(buttons);
-        this.element.appendChild(controls);
-
-        target.appendChild(this.element);
-    }
-    setState(state: timerStates){
-        if(state === "start"){
+            this.buttons.start.disable();
+        }
+        else if(state === "start"){
             this.duration = this.input.time *1000;
             this.lastUpdate = this.timeSource.value ?? Date.now();
             this.timeSourceSymbol = this.timeSource.subscribe((time)=>{
@@ -160,12 +156,12 @@ export class CountdownTimer extends Clock{
         else{
             sandFalling.classList.add("hidden");
         }
-        const buttons = this.element.querySelectorAll("button") as NodeListOf<HTMLButtonElement>;
+        //const buttons = this.element.querySelectorAll("button") as NodeListOf<HTMLButtonElement>;
         const buttonState = buttonStates[state];
-        buttons.forEach((button, index) => {
-            if(!buttonState[index]) button.classList.add("hidden");
-            else button.classList.remove("hidden");
-        });
+        Object.values(this.buttons).forEach((button, index)=>{
+            if(!buttonState[index]) button.hide();
+            else button.show();
+        })
         this.timerState = state;
     }
     showSetTime(value: timeStrObj){
