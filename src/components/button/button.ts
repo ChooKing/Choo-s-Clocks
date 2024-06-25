@@ -14,6 +14,12 @@ export class Button extends Component<HTMLButtonElement>{
     setHandler(callback: () => void){
         this.element.addEventListener("click", callback);
     }
+    disable(){
+        this.element.disabled = true;
+    }
+    enable(){
+        this.element.disabled = false;
+    }
     update(value: string){
         this._text = value;
     }
