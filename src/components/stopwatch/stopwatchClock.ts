@@ -5,18 +5,19 @@ import {sec2StrTime} from "../../util.ts";
 import {DigitType, LEDDigit} from "../LEDTime/LEDDigit/LEDDigit.ts";
 import {nullTime} from "../../global.ts";
 import {SignalMap} from "../../SignalMap.ts";
+import {Button} from "../button/button.ts";
+import {Children} from "../Component.ts";
 
 export class StopwatchClock extends Clock{
     elapsed = 0;
-    lastUpdate = 0;
     isRunning = false;
     timeView?: LEDTime;
     centisecondView: LEDDigit[] = [];
-    startButton?: HTMLButtonElement;
-    stopButton?: HTMLButtonElement;
-    clearButton?: HTMLButtonElement;
+    buttons: Children<Button> = {};
     timeSource: SignalMap<Date, number>;
     timeSourceSymbol?: symbol;
+    timeOffset = 0;
+    startTime = 0;
     constructor(parent: HTMLDivElement, timeSource: SignalMap<Date, number>) {
         super("stopwatch",parent);
         this.timeSource = timeSource;
@@ -42,77 +43,66 @@ export class StopwatchClock extends Clock{
         this.centisecondView[0].show();
         this.centisecondView[1].update("0");
         this.centisecondView[1].show();
-
         timeContainer.appendChild(centisecondContainer);
         this.element.appendChild(timeContainer);
-
-
         const controls = document.createElement("div");
         controls.classList.add("controls");
-        this.startButton = document.createElement("button");
-        this.startButton.innerText = "start";
-        controls.appendChild(this.startButton);
-        this.startButton.addEventListener("click", ()=>{this.start()});
-
-
-        this.stopButton = document.createElement("button");
-        this.stopButton.innerText = "stop";
-        controls.appendChild(this.stopButton);
-        this.stopButton.addEventListener("click", ()=>{this.stop()});
-        this.stopButton.classList.add("hidden");
-
-
-        this.clearButton = document.createElement("button");
-        this.clearButton.innerText = "clear";
-        controls.appendChild(this.clearButton);
-        this.clearButton.addEventListener("click", ()=>{this.clear()});
-        this.clearButton.classList.add("hidden");
-
+        this.buttons.start = new Button(controls, "start");
+        this.buttons.start.setHandler(()=>{this.start();});
+        this.buttons.resume = new Button(controls, "resume", true);
+        this.buttons.resume.setHandler(()=>{this.resume();});
+        this.buttons.stop = new Button(controls, "stop", true);
+        this.buttons.stop.setHandler(()=>{this.stop();});
+        this.buttons.clear = new Button(controls, "clear", true);
+        this.buttons.clear.setHandler(()=>{this.clear()});
         this.element.appendChild(controls);
-
         target.appendChild(this.element);
     }
     start(){
+        this.run();
+        this.buttons.start.hide();
+    }
+    resume(){
+        this.timeOffset = this.elapsed;
+        this.run();
+    }
+    run(){
         this.isRunning = true;
-        this.lastUpdate = this.timeSource.value!;
+        this.startTime = this.timeSource.value;
         this.timeSourceSymbol = this.timeSource.subscribe((time)=>{
             this.update(time);
         });
-        this.startButton?.classList.add("hidden");
-        this.startButton!.innerText = "resume";
-        this.stopButton?.classList.remove("hidden");
-        this.clearButton?.classList.add("hidden");
+        this.buttons.stop.show();
+        this.buttons.resume.hide();
+        this.buttons.clear.hide();
     }
     stop(){
         this.isRunning = false;
         if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
         this.update(this.timeSource.value!);// Enhance accuracy over 151ms polling
-        this.startButton?.classList.remove("hidden");
-        this.stopButton?.classList.add("hidden");
-        this.clearButton?.classList.remove("hidden");
+        this.buttons.resume.show();
+        this.buttons.stop.hide();
+        this.buttons.clear.show();
     }
     clear(){
-        this.lastUpdate = this.timeSource.value!;
+        this.startTime = 0;
         this.elapsed = 0;
         this.timeView!.update(nullTime);
         this.centisecondView[0].update("0");
         this.centisecondView[1].update("0");
-        this.startButton?.classList.remove("hidden");
-        this.startButton!.innerText ="start";
-        this.stopButton?.classList.add("hidden");
-        this.clearButton?.classList.add("hidden");
-
+        this.buttons.start.show();
+        this.buttons.stop.hide();
+        this.buttons.clear.hide();
+        this.buttons.resume.hide();
     }
     update(time: number): void {
-        this.elapsed += (time - this.lastUpdate);
+        this.elapsed = (time - this.startTime + this.timeOffset);
         const timeStrings = sec2StrTime(Math.round(this.elapsed /1000));
         this.timeView?.update(timeStrings);
 
         const centisecondStr = String(Math.round((this.elapsed % 1000) / 10)).padStart(2,"0");
         this.centisecondView![0].update(centisecondStr[0] as DigitType);
         this.centisecondView![1].update(centisecondStr[1] as DigitType);
-
-        this.lastUpdate = time;
     }
     show() {
         super.show();
