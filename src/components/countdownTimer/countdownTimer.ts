@@ -17,21 +17,20 @@ const buttonStates = {
 type timerStates = keyof typeof buttonStates | "start" | "resume";
 export class CountdownTimer extends Clock{
     duration: number;
-    elapsed: number;
-    lastUpdate: number;
+    startTime = 0;
+    remaining = 0;
     timerState: timerStates;
     timeView!: LEDTime;
     input!: TimeInput;
     buttons: Children<Button> = {};
     timeSource: SignalMap<Date, number>;
     timeSourceSymbol?: symbol;
+    timeOffset = 0;
     constructor(parent: HTMLDivElement, timeSource: SignalMap<Date, number>) {
         super("countdown", parent);
         this.timeSource = timeSource;
         this.render(parent);
         this.duration = 0;
-        this.elapsed = 0;
-        this.lastUpdate = 0;
         this.timerState = "stop";
         this.setState("stop");
     }
@@ -124,16 +123,17 @@ export class CountdownTimer extends Clock{
         }
         else if(state === "start"){
             this.duration = this.input.time *1000;
-            this.lastUpdate = this.timeSource.value ?? Date.now();
+            this.remaining = this.duration;
+            this.startTime = this.timeSource.value;
             this.timeSourceSymbol = this.timeSource.subscribe((time)=>{
                 this.update(time);
             });
             state = "run";
-            this.elapsed = 0;
             this.input.hide();
             this.input.element.value = "";
         }
         else if(state === "pause"){
+            this.timeOffset = this.duration - this.remaining;
             if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
         }
         else if(state === "stop"){
@@ -141,9 +141,10 @@ export class CountdownTimer extends Clock{
             this.duration = 0;
             this.element.style.setProperty("--percent-remaining", "0%");
             this.timeView.update(nullTime);
+            this.timeOffset = 0;
         }
         else if(state === "resume"){
-            this.lastUpdate = this.timeSource.value ?? Date.now();
+            this.startTime = this.timeSource.value;
             this.timeSourceSymbol = this.timeSource.subscribe((time)=>{
                 this.update(time);
             });
@@ -156,7 +157,6 @@ export class CountdownTimer extends Clock{
         else{
             sandFalling.classList.add("hidden");
         }
-        //const buttons = this.element.querySelectorAll("button") as NodeListOf<HTMLButtonElement>;
         const buttonState = buttonStates[state];
         Object.values(this.buttons).forEach((button, index)=>{
             if(!buttonState[index]) button.hide();
@@ -169,13 +169,12 @@ export class CountdownTimer extends Clock{
     }
     update(time: number): void {
         if(this.timerState === "run"){
-            this.elapsed += time - this.lastUpdate;
-            const timeRemaining = this.duration - this.elapsed;
-            const percentRemaining = (timeRemaining / this.duration) * 100;
+            this.remaining = this.duration - (time - this.startTime) - this.timeOffset;
+            const percentRemaining = (this.remaining / this.duration) * 100;
             this.element.style.setProperty("--percent-remaining", percentRemaining+"%");
-            const remainingObj = sec2StrTime(Math.round(timeRemaining / 1000));
+            const remainingObj = sec2StrTime(Math.round(this.remaining / 1000));
             this.timeView.update(remainingObj);
-            if(this.elapsed >= this.duration){
+            if(this.remaining <= 0){
                 if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
                 this.parent.classList.add("ringing");
                 setTimeout(()=>{
@@ -189,7 +188,6 @@ export class CountdownTimer extends Clock{
                 console.log("finished");
             }
         }
-        this.lastUpdate = time;
     }
 
 }
