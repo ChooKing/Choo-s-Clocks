@@ -3,7 +3,7 @@ import {LocalNotifications, LocalNotificationSchema} from "@capacitor/local-noti
 import {Clock} from "../../Clock.ts";
 import {num2StrTimeObj, timeNumObj, timeStrObj} from "../../util.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
-import {blankTime, clockSettings} from "../../global.ts";
+import {beep, blankTime, clockSettings} from "../../global.ts";
 import {TimeInput} from "../Input/timeInput.ts";
 import {SignalMap} from "../../SignalMap.ts";
 import {Toggle} from "../Input/toggle/toggle.ts";
@@ -11,6 +11,7 @@ import {H24Toggle} from "../Input/h24toggle.ts";
 import {DigitType} from "../LEDTime/LEDDigit/LEDDigit.ts";
 import {Children} from "../Component.ts";
 import {Button} from "../button/button.ts";
+import {Dialog} from "@capacitor/dialog";
 
 
 function hoursTo24(hours: number, h24: boolean, pm: boolean){
@@ -197,10 +198,10 @@ export class AlarmClock extends Clock{
         alarmDate.setSeconds(this.alarmTime.seconds);
         this.notification = {
             title: "Alarm",
-            schedule: {at: alarmDate, allowWhileIdle: true, repeats: true, every: "day"},
+            schedule: {at: alarmDate, repeats: true, every: "day"},
             body: "Alarm time reached",
             id: 1,
-            sound: "./assets/public/ring.mp3"
+            sound: "ring.mp3"
         };
         LocalNotifications.schedule({
             notifications: [this.notification]
@@ -213,7 +214,7 @@ export class AlarmClock extends Clock{
         this.enabled = false;
         if(this.notification) LocalNotifications.cancel({notifications: [this.notification]});
     }
-    /*
+
     update(value: timeNumObj): void {
         if(
             (value.hours === this.alarmTime.hours) &&
@@ -222,6 +223,11 @@ export class AlarmClock extends Clock{
         ){
             if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
             this.parent.classList.add("ringing");
+            Dialog.alert({
+                title: 'Alarm',
+                message: 'Alarm time reached'
+            });
+
             setTimeout(()=>{
                 this.parent.classList.remove("ringing");
             }, 2000);
@@ -237,7 +243,7 @@ export class AlarmClock extends Clock{
         }
     }
 
-     */
+
     redraw(value: timeStrObj): void {
         this.timeViews.time.update(value);
     }

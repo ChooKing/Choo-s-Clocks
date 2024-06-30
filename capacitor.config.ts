@@ -8,7 +8,7 @@ const config: CapacitorConfig = {
     LocalNotifications: {
       smallIcon: "ic_stat_icon_config_sample",
       iconColor: "#488AFF",
-      sound: "./assets/public/ring.mp3",
+      sound: "ring.mp3",
     },
   },
 };

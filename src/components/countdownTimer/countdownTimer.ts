@@ -3,11 +3,12 @@ import {Clock} from "../../Clock.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
 import {sec2StrTime, str2Time, timeStrObj} from "../../util.ts";
 import {TimeInput} from "../Input/timeInput.ts";
-import {blankTime, nullTime} from "../../global.ts";
+import {beep, blankTime, nullTime} from "../../global.ts";
 import {SignalMap} from "../../SignalMap.ts";
 import {Children} from "../Component.ts";
 import {Button} from "../button/button.ts";
 import {LocalNotifications, LocalNotificationSchema} from "@capacitor/local-notifications";
+import {Dialog} from "@capacitor/dialog";
 const buttonStates = {
     //set, start, pause, resume, stop
     set:[false, true, false,false,false],
@@ -171,16 +172,20 @@ export class CountdownTimer extends Clock{
     setAlarm(){
         const alarmDate = new Date();
         alarmDate.setSeconds(alarmDate.getSeconds() + (this.remaining)/1000);
-        this.notification = {
+        const notification = {
             title: "Countdown Timer",
             schedule: {at: alarmDate, repeats: false},
             body: "Time ended",
             id: 2,
-            sound: "./assets/public/ring.mp3"
+            sound: "ring.mp3"
         };
-        LocalNotifications.schedule({
-            notifications: [this.notification]
+        this.notification = notification;
+        LocalNotifications.checkPermissions().then(()=>{
+            LocalNotifications.schedule({
+                notifications: [notification]
+            });
         });
+
 
     }
     showSetTime(value: timeStrObj){
@@ -200,14 +205,18 @@ export class CountdownTimer extends Clock{
                     this.parent.classList.remove("ringing");
                 }, 2000);
                 this.setState("stop");
-                /*
+                Dialog.alert({
+                    title: 'Countdown',
+                    message: 'Countdown finished',
+                });
+
                 beep.play(200);
                 setTimeout(()=>{
                     beep.play(500);
                 }, 300);
                 console.log("finished");
 
-                 */
+
 
             }
         }
