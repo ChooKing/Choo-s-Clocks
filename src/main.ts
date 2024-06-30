@@ -1,7 +1,9 @@
 import "./style.css";
 import {App} from "@capacitor/app";
+import {LocalNotifications} from "@capacitor/local-notifications";
 import {clockNameType, clockNames, clocks, dateTimeSignal, beep} from "./global.ts";
 
+LocalNotifications.requestPermissions();
 let currentClock: clockNameType = "digital";
 
 export function setCurrentClock(name: clockNameType){
