@@ -3,7 +3,7 @@ import {App} from "@capacitor/app";
 import {LocalNotifications} from "@capacitor/local-notifications";
 import {clockNameType, clockNames, clocks, dateTimeSignal, beep} from "./global.ts";
 
-LocalNotifications.requestPermissions();
+let permissionRequested = false;
 let currentClock: clockNameType = "digital";
 
 export function setCurrentClock(name: clockNameType){
@@ -26,6 +26,10 @@ clockButtons.forEach(button=>{
     button.addEventListener("click", (e)=>{
         const target = e.currentTarget as HTMLDivElement;
         setCurrentClock(target.children[0].children[0].textContent!.toLowerCase().trim() as clockNameType);
+        if(!permissionRequested){
+            LocalNotifications.requestPermissions();
+            permissionRequested = true;
+        }
         beep.play(10);//This is primarily a workaround for Safari's time limit on last interaction before audio plays.
     });
 })
