@@ -21,15 +21,14 @@ setInterval(()=>{
     dateTimeSignal.setValue(now);
 }, 115);
 
-const textRing = document.querySelector(".text-ring") as HTMLDivElement;
-textRing.addEventListener("click", (e)=>{
-    beep.play(10);//This is primarily a workaround for Safari's time limit on last interaction before audio plays.
-    const target = e.target as HTMLDivElement;
-    if(target.tagName === "textPath"){
-        setCurrentClock(target.textContent!.toLowerCase() as clockNameType);
-    }
-});
-
+const clockButtons = document.querySelectorAll(".curved-text-container");
+clockButtons.forEach(button=>{
+    button.addEventListener("click", (e)=>{
+        const target = e.currentTarget as HTMLDivElement;
+        setCurrentClock(target.children[0].children[0].textContent!.toLowerCase().trim() as clockNameType);
+        beep.play(10);//This is primarily a workaround for Safari's time limit on last interaction before audio plays.
+    });
+})
 App.addListener("pause",()=>{
     Object.values(clocks).forEach(clock=>{
         clock.wake();
