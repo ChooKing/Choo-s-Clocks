@@ -11,7 +11,8 @@ import {H24Toggle} from "../Input/h24toggle.ts";
 import {DigitType} from "../LEDTime/LEDDigit/LEDDigit.ts";
 import {Children} from "../Component.ts";
 import {Button} from "../button/button.ts";
-import {Toast} from "@capacitor/toast";
+import {Dialog} from "@capacitor/dialog";
+
 
 function hoursTo24(hours: number, h24: boolean, pm: boolean){
     if(h24) return hours;
@@ -190,7 +191,7 @@ export class AlarmClock extends Clock{
         this.redraw(num2StrTimeObj(displayTime, clockSettings.hr24));
     }
     enableAlarm(){
-        //this.timeSourceSymbol = this.timeSource.subscribe((value)=>{this.update(value)});
+        this.timeSourceSymbol = this.timeSource.subscribe((value)=>{this.update(value)});
         const alarmDate = new Date();
         alarmDate.setHours(this.alarmTime.hours);
         alarmDate.setMinutes(this.alarmTime.minutes);
@@ -209,7 +210,7 @@ export class AlarmClock extends Clock{
         this.toggles.off.update(true);
     }
     disableAlarm(){
-        //if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
+        if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
         this.enabled = false;
         if(this.notification) LocalNotifications.cancel({notifications: [this.notification]});
     }
@@ -222,10 +223,10 @@ export class AlarmClock extends Clock{
         ){
             if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
             this.parent.classList.add("ringing");
-            Toast.show({
-                text: 'Alarm Finished',
-                duration: "long",
-                position:"center"
+            const alarmTimeStr = num2StrTimeObj(this.alarmTime, clockSettings.hr24);
+            Dialog.alert({
+                title: 'Alarm',
+                message: `The time is:${alarmTimeStr.hours.join("")}:${alarmTimeStr.minutes.join("")}:${alarmTimeStr.seconds.join("")}`,
             });
 
             setTimeout(()=>{
@@ -249,8 +250,12 @@ export class AlarmClock extends Clock{
     }
 
     sleep(): void {
+        if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
     }
 
     wake(): void {
+        if(this.enabled){
+            this.timeSourceSymbol = this.timeSource.subscribe((value)=>{this.update(value)});
+        }
     }
 }

@@ -8,7 +8,8 @@ import {SignalMap} from "../../SignalMap.ts";
 import {Children} from "../Component.ts";
 import {Button} from "../button/button.ts";
 import {LocalNotifications, LocalNotificationSchema} from "@capacitor/local-notifications";
-import {Toast} from "@capacitor/toast";
+import {Dialog} from "@capacitor/dialog";
+
 
 const buttonStates = {
     //set, start, pause, resume, stop
@@ -205,17 +206,18 @@ export class CountdownTimer extends Clock{
                 setTimeout(()=>{
                     this.parent.classList.remove("ringing");
                 }, 2000);
-                this.setState("stop");
-                Toast.show({
-                    text: 'Countdown finished!',
-                    duration: "long",
-                    position:"center"
+
+                const durationStr = sec2StrTime(this.duration/1000);
+                Dialog.alert({
+                    title: 'Countdown Timer',
+                    message: `${durationStr.hours.join("")}:${durationStr.minutes.join("")}:${durationStr.seconds.join("")} elapsed!`,
                 });
 
                 beep.play(200);
                 setTimeout(()=>{
                     beep.play(500);
                 }, 300);
+                this.setState("stop");
             }
         }
     }
