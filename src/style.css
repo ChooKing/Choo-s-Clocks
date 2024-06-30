@@ -52,7 +52,7 @@ body{
   height: 100%;
   border-radius: 50%;
   z-index: -1;
-  background-color: transparent;
+  background-color: black;
 }
 .clock-container.ringing::before{
   animation: flash 400ms linear infinite;
