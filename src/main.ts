@@ -30,7 +30,14 @@ textRing.addEventListener("click", (e)=>{
     }
 });
 
+App.addListener("pause",()=>{
+    Object.values(clocks).forEach(clock=>{
+        clock.wake();
+    });
+});
 
 App.addListener("resume",()=>{
-
+    Object.values(clocks).forEach(clock=>{
+        clock.wake();
+    });
 });

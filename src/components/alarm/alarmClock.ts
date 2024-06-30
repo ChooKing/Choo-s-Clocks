@@ -11,8 +11,7 @@ import {H24Toggle} from "../Input/h24toggle.ts";
 import {DigitType} from "../LEDTime/LEDDigit/LEDDigit.ts";
 import {Children} from "../Component.ts";
 import {Button} from "../button/button.ts";
-import {Dialog} from "@capacitor/dialog";
-
+import {Toast} from "@capacitor/toast";
 
 function hoursTo24(hours: number, h24: boolean, pm: boolean){
     if(h24) return hours;
@@ -223,9 +222,10 @@ export class AlarmClock extends Clock{
         ){
             if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
             this.parent.classList.add("ringing");
-            Dialog.alert({
-                title: 'Alarm',
-                message: 'Alarm time reached'
+            Toast.show({
+                text: 'Alarm Finished',
+                duration: "long",
+                position:"center"
             });
 
             setTimeout(()=>{
@@ -246,5 +246,11 @@ export class AlarmClock extends Clock{
 
     redraw(value: timeStrObj): void {
         this.timeViews.time.update(value);
+    }
+
+    sleep(): void {
+    }
+
+    wake(): void {
     }
 }

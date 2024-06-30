@@ -8,7 +8,8 @@ import {SignalMap} from "../../SignalMap.ts";
 import {Children} from "../Component.ts";
 import {Button} from "../button/button.ts";
 import {LocalNotifications, LocalNotificationSchema} from "@capacitor/local-notifications";
-import {Dialog} from "@capacitor/dialog";
+import {Toast} from "@capacitor/toast";
+
 const buttonStates = {
     //set, start, pause, resume, stop
     set:[false, true, false,false,false],
@@ -205,21 +206,34 @@ export class CountdownTimer extends Clock{
                     this.parent.classList.remove("ringing");
                 }, 2000);
                 this.setState("stop");
-                Dialog.alert({
-                    title: 'Countdown',
-                    message: 'Countdown finished',
+                Toast.show({
+                    text: 'Countdown finished!',
+                    duration: "long",
+                    position:"center"
                 });
 
                 beep.play(200);
                 setTimeout(()=>{
                     beep.play(500);
                 }, 300);
-                console.log("finished");
-
-
-
             }
         }
     }
 
+    sleep(): void {
+        if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
+    }
+
+    wake(): void {
+        if(this.timerState === "run"){
+            if(this.duration - (this.timeSource.value - this.startTime) - this.timeOffset > 0){
+                this.timeSourceSymbol = this.timeSource.subscribe((time)=>{
+                    this.update(time);
+                });
+            }
+            else{
+                this.timeView.update(nullTime);
+            }
+        }
+    }
 }
