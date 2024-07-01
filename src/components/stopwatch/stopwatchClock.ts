@@ -112,4 +112,12 @@ export class StopwatchClock extends Clock{
         super.hide();
         setTimeout(()=>{this.element.classList.remove("visible");}, 500);
     }
+
+    sleep(): void {
+
+    }
+
+    wake(): void {
+
+    }
 }

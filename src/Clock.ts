@@ -17,4 +17,6 @@ export abstract class Clock extends Component<HTMLDivElement>{
         super.show();
         this.element.classList.remove("fading");
     }
+    abstract sleep():void;
+    abstract wake():void;
 }

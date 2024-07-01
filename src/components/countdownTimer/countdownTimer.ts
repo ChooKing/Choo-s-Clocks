@@ -7,6 +7,10 @@ import {beep, blankTime, nullTime} from "../../global.ts";
 import {SignalMap} from "../../SignalMap.ts";
 import {Children} from "../Component.ts";
 import {Button} from "../button/button.ts";
+import {LocalNotifications, LocalNotificationSchema} from "@capacitor/local-notifications";
+import {Dialog} from "@capacitor/dialog";
+
+
 const buttonStates = {
     //set, start, pause, resume, stop
     set:[false, true, false,false,false],
@@ -26,6 +30,7 @@ export class CountdownTimer extends Clock{
     timeSource: SignalMap<Date, number>;
     timeSourceSymbol?: symbol;
     timeOffset = 0;
+    notification?: LocalNotificationSchema;
     constructor(parent: HTMLDivElement, timeSource: SignalMap<Date, number>) {
         super("countdown", parent);
         this.timeSource = timeSource;
@@ -131,6 +136,7 @@ export class CountdownTimer extends Clock{
             state = "run";
             this.input.hide();
             this.input.element.value = "";
+            this.setAlarm();
         }
         else if(state === "pause"){
             this.timeOffset = this.duration - this.remaining;
@@ -142,6 +148,7 @@ export class CountdownTimer extends Clock{
             this.element.style.setProperty("--percent-remaining", "0%");
             this.timeView.update(nullTime);
             this.timeOffset = 0;
+            if(this.notification) LocalNotifications.cancel({notifications: [this.notification]});
         }
         else if(state === "resume"){
             this.startTime = this.timeSource.value;
@@ -164,6 +171,25 @@ export class CountdownTimer extends Clock{
         })
         this.timerState = state;
     }
+    setAlarm(){
+        const alarmDate = new Date();
+        alarmDate.setSeconds(alarmDate.getSeconds() + (this.remaining)/1000);
+        const notification = {
+            title: "Countdown Timer",
+            schedule: {at: alarmDate, repeats: false},
+            body: "Time ended",
+            id: 2,
+            sound: "ring.mp3"
+        };
+        this.notification = notification;
+        LocalNotifications.checkPermissions().then(()=>{
+            LocalNotifications.schedule({
+                notifications: [notification]
+            });
+        });
+
+
+    }
     showSetTime(value: timeStrObj){
         this.timeView.update(value);
     }
@@ -180,14 +206,36 @@ export class CountdownTimer extends Clock{
                 setTimeout(()=>{
                     this.parent.classList.remove("ringing");
                 }, 2000);
-                this.setState("stop");
+
+                const durationStr = sec2StrTime(this.duration/1000);
+                Dialog.alert({
+                    title: 'Countdown Timer',
+                    message: `${durationStr.hours.join("")}:${durationStr.minutes.join("")}:${durationStr.seconds.join("")} elapsed!`,
+                });
+
                 beep.play(200);
                 setTimeout(()=>{
                     beep.play(500);
                 }, 300);
-                console.log("finished");
+                this.setState("stop");
             }
         }
     }
 
+    sleep(): void {
+        if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
+    }
+
+    wake(): void {
+        if(this.timerState === "run"){
+            if(this.duration - (this.timeSource.value - this.startTime) - this.timeOffset > 0){
+                this.timeSourceSymbol = this.timeSource.subscribe((time)=>{
+                    this.update(time);
+                });
+            }
+            else{
+                this.timeView.update(nullTime);
+            }
+        }
+    }
 }

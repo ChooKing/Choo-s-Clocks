@@ -70,4 +70,14 @@ export class DigitalClock extends Clock{
         this.element.classList.remove("flex");
         if(this.formattedTimeSymbol) this.formattedTime.unsubscribe(this.formattedTimeSymbol);
     }
+
+    sleep(): void {
+        if(this.formattedTimeSymbol) this.formattedTime.unsubscribe(this.formattedTimeSymbol);
+    }
+
+    wake(): void {
+        this.formattedTimeSymbol = this.formattedTime.subscribe((time)=>{
+            this.update(time);
+        });
+    }
 }

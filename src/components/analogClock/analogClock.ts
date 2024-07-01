@@ -40,6 +40,7 @@ export class AnalogClock extends Clock{
     }
     hide() {
         super.hide();
+        if(this.dateSourceSymbol) this.dateSource.unsubscribe(this.dateSourceSymbol);
     }
 
     render(target: HTMLDivElement): void {
@@ -80,5 +81,15 @@ export class AnalogClock extends Clock{
         this.secondRef.classList.add("second");
         this.secondRef.classList.add("hand");
         this.element.appendChild(this.secondRef);
+    }
+
+    sleep(): void {
+        if(this.dateSourceSymbol) this.dateSource.unsubscribe(this.dateSourceSymbol);
+    }
+
+    wake(): void {
+        this.dateSourceSymbol = this.dateSource.subscribe((time)=>{
+            this.update(time);
+        });
     }
 }

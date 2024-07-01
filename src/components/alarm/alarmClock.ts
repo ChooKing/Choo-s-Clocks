@@ -1,4 +1,5 @@
 import "./styles.css";
+import {LocalNotifications, LocalNotificationSchema} from "@capacitor/local-notifications";
 import {Clock} from "../../Clock.ts";
 import {num2StrTimeObj, timeNumObj, timeStrObj} from "../../util.ts";
 import {LEDTime} from "../LEDTime/LEDTime.ts";
@@ -10,6 +11,7 @@ import {H24Toggle} from "../Input/h24toggle.ts";
 import {DigitType} from "../LEDTime/LEDDigit/LEDDigit.ts";
 import {Children} from "../Component.ts";
 import {Button} from "../button/button.ts";
+import {Dialog} from "@capacitor/dialog";
 
 
 function hoursTo24(hours: number, h24: boolean, pm: boolean){
@@ -32,6 +34,7 @@ export class AlarmClock extends Clock{
     timeViews: Children<LEDTime> = {}
     setting = false;
     enabled = false;
+    notification?: LocalNotificationSchema;
     constructor(parent: HTMLDivElement, timeSource: SignalMap<Date, timeNumObj>) {
         super("alarm", parent);
         this.render(parent);
@@ -189,13 +192,29 @@ export class AlarmClock extends Clock{
     }
     enableAlarm(){
         this.timeSourceSymbol = this.timeSource.subscribe((value)=>{this.update(value)});
+        const alarmDate = new Date();
+        alarmDate.setHours(this.alarmTime.hours);
+        alarmDate.setMinutes(this.alarmTime.minutes);
+        alarmDate.setSeconds(this.alarmTime.seconds);
+        this.notification = {
+            title: "Alarm",
+            schedule: {at: alarmDate, repeats: true, every: "day"},
+            body: "Alarm time reached",
+            id: 1,
+            sound: "ring.mp3"
+        };
+        LocalNotifications.schedule({
+            notifications: [this.notification]
+        });
         this.enabled = true;
         this.toggles.off.update(true);
     }
     disableAlarm(){
         if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
         this.enabled = false;
+        if(this.notification) LocalNotifications.cancel({notifications: [this.notification]});
     }
+
     update(value: timeNumObj): void {
         if(
             (value.hours === this.alarmTime.hours) &&
@@ -204,6 +223,12 @@ export class AlarmClock extends Clock{
         ){
             if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
             this.parent.classList.add("ringing");
+            const alarmTimeStr = num2StrTimeObj(this.alarmTime, clockSettings.hr24);
+            Dialog.alert({
+                title: 'Alarm',
+                message: `The time is:${alarmTimeStr.hours.join("")}:${alarmTimeStr.minutes.join("")}:${alarmTimeStr.seconds.join("")}`,
+            });
+
             setTimeout(()=>{
                 this.parent.classList.remove("ringing");
             }, 2000);
@@ -218,7 +243,19 @@ export class AlarmClock extends Clock{
             }, 300);
         }
     }
+
+
     redraw(value: timeStrObj): void {
         this.timeViews.time.update(value);
+    }
+
+    sleep(): void {
+        if(this.timeSourceSymbol) this.timeSource.unsubscribe(this.timeSourceSymbol);
+    }
+
+    wake(): void {
+        if(this.enabled){
+            this.timeSourceSymbol = this.timeSource.subscribe((value)=>{this.update(value)});
+        }
     }
 }
