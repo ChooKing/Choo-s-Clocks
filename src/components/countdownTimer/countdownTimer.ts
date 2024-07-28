@@ -82,10 +82,7 @@ export class CountdownTimer extends Clock{
         this.timeView.show();
         this.input = new TimeInput(timeContainer,(value: string)=>{
             this.showSetTime(str2Time(value));
-            if(Number(value) > 0){
-                this.buttons.start.enable();
-            }
-            else this.buttons.start.disable();
+            this.buttons.start.enable();
         });
         this.input.hide();
         controls.appendChild(timeContainer);
@@ -174,10 +171,11 @@ export class CountdownTimer extends Clock{
     setAlarm(){
         const alarmDate = new Date();
         alarmDate.setSeconds(alarmDate.getSeconds() + (this.remaining)/1000);
+        const durationStr = sec2StrTime(this.duration/1000);
         const notification = {
             title: "Countdown Timer",
             schedule: {at: alarmDate, repeats: false},
-            body: "Time ended",
+            body: `${durationStr.hours.join("")}:${durationStr.minutes.join("")}:${durationStr.seconds.join("")} elapsed!`,
             id: 2,
             sound: "ring.mp3"
         };
@@ -234,7 +232,7 @@ export class CountdownTimer extends Clock{
                 });
             }
             else{
-                this.timeView.update(nullTime);
+                this.setState("stop");
             }
         }
     }
